@@ -5,6 +5,7 @@ import styles from "./Pages.module.scss";
 import axios from "axios";
 import { formatDate, formatShortDate } from "./Functions/common";
 import {  HiCheck } from "react-icons/hi";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -53,7 +54,7 @@ export const SeedlingsList: React.FC<SalesListProps> = ({ refresh }) => {
       } else {
         setSeedlings(response.data); // Pass response.data instead of salesData.data
       }
-    } catch (error) {
+    } catch(error) {
       console.error("Error fetching sales data", error);
     } finally {
       setLoading(false); // Set loading to false after fetching data

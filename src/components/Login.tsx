@@ -5,6 +5,7 @@ import { auth, provider } from "../../firebaseConfig";
 import { signInWithPopup } from "firebase/auth";
 import axios from "axios";
 import {  HiExclamation } from "react-icons/hi";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -55,7 +56,7 @@ export const Login: React.FC = () => {
         sessionStorage.setItem("google_uid", userResponse.data.googleuid);
         navigate("/dashboard");
       }
-    } catch (error) {
+    } catch(error) {
       console.error(error);
     }
   };

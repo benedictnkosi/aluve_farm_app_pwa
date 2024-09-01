@@ -12,6 +12,7 @@ import {
 import { auth } from "../../../firebaseConfig";
 import { HiCheck } from "react-icons/hi";
 import axios from "axios";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -52,10 +53,9 @@ const JoinCreateFarm: React.FC<Props> = ({ setIsBelongsToFarm }) => {
           setIsError(true);
           setMessage(response.data.message);
         }
-      } catch (error) {
+      } catch {
         setIsError(true);
         setMessage("Error joining the farm");
-        console.error("Error joining the farm:", error);
       } finally {
         setLoading(false);
       }
@@ -89,10 +89,9 @@ const JoinCreateFarm: React.FC<Props> = ({ setIsBelongsToFarm }) => {
           setIsError(true);
           setMessage(response.data.message);
         }
-      } catch (error) {
+      } catch {
         setIsError(true);
         setMessage("Error creating the farm");
-        console.error("Error creating the farm:", error);
       } finally {
         setLoading(false);
       }

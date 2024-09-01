@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { HiCheck, HiInformationCircle } from "react-icons/hi";
 import axios from "axios";
 import { SidebarNav } from "./NavBar/SidebarNav";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -53,7 +54,7 @@ export const Seedlings = () => {
       } else {
         setSeeds(seeds.data);
       }
-    } catch (error) {
+    } catch(error) {
       console.error("Error fetching seeds names:", error);
       setMessage("Error fetching seeds names.");
       setShowToast(true);
@@ -84,7 +85,7 @@ export const Seedlings = () => {
         setIsError(true);
         setMessage(response.data.message);
       }
-    } catch (error) {
+    } catch {
       setIsError(true);
       setMessage("Error recording sale.");
     } finally {

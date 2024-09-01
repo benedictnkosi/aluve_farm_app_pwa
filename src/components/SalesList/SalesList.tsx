@@ -13,6 +13,7 @@ import { Spinner } from "flowbite-react";
 import styles from "../Pages.module.scss";
 import axios from "axios";
 import { formatDate } from "../Functions/common";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -57,8 +58,9 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
       } else {
         setSales(response.data); // Pass response.data instead of salesData.data
       }
-    } catch (error) {
-      console.error("Error fetching sales data", error);
+    } catch {
+      setShowToast(true);
+      setMessage("Error fetching sales data");
     } finally {
       setLoading(false); // Set loading to false after fetching data
     }
@@ -88,7 +90,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
         setIsError(true);
         setMessage(response.data.message);
       }
-    } catch (error) {
+    } catch {
       setIsError(true);
       setMessage("Error recording payment.");
     } finally {

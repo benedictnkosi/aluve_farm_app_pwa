@@ -1,21 +1,13 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { Sidebar } from "flowbite-react";
 import { BiBuoy } from "react-icons/bi";
-import { HiArrowSmRight, HiChartPie, HiUser, HiCog, HiTrendingUp, HiBriefcase, HiClipboardCopy   } from "react-icons/hi";
+import { HiArrowSmRight, HiChartPie, HiCog, HiTrendingUp} from "react-icons/hi";
 import styles from "../Pages.module.scss";
+import React from "react";
 
 export const SidebarNav = () => {
-
-  const copyFarmIdToClipboard = () => {
-    const farmUid = sessionStorage.getItem('farm_uid');
-    if (farmUid) {
-      navigator.clipboard.writeText(farmUid).then(() => {
-      }).catch(err => {
-        console.error('Failed to copy Farm ID: ', err);
-      });
-    }
-  };
-
   return (
+    // eslint-disable-next-line react/react-in-jsx-scope
     <Sidebar className={styles["desktop-only-sideNave"]} aria-label="Sidebar with content separator example">
       <Sidebar.Logo href="#" img="/images/logo.jpeg" imgAlt="Aluve Farm logo">
         Aluve Crop

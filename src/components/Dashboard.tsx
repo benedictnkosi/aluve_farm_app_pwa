@@ -6,6 +6,8 @@ import { auth } from "../../firebaseConfig";
 import JoinCreateFarm from "./JoinCreateFarm/JoinCreateFarm";
 import { useNavigate } from "react-router-dom";
 import { SidebarNav } from "./NavBar/SidebarNav";
+import React from "react";
+
 
 export const Dashboard = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -24,7 +26,7 @@ export const Dashboard = () => {
       } else {
         navigate("/");
       }
-    } catch (error) {
+    } catch {
       console.error("Error checking farm:");
     } finally {
       setLoading(false);

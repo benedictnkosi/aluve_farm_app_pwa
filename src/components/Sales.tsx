@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { HiCheck, HiInformationCircle } from "react-icons/hi";
 import axios from "axios";
 import { SidebarNav } from "./NavBar/SidebarNav";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -58,7 +59,7 @@ export const Sales = () => {
       } else {
         setCrops(crops.data); // Pass crops.data instead of crops
       }
-    } catch (error) {
+    } catch(error) {
       console.error("Error fetching crop names:", error);
       setShowToast(true);
 
@@ -80,7 +81,7 @@ export const Sales = () => {
       } else {
         setCustomers(response.data);
       }
-    } catch (error) {
+    } catch {
       console.error("Error fetching customer names:", error);
       return [];
     }
@@ -103,7 +104,7 @@ export const Sales = () => {
       } else {
         setPackages(response.data); // Pass response.data instead of salesData.data
       }
-    } catch (error) {
+    } catch {
       console.error("Error fetching sales data", error);
     } finally {
       setLoading(false); // Set loading to false after fetching data
@@ -133,7 +134,7 @@ export const Sales = () => {
         setIsError(true);
         setMessage(response.data.message);
       }
-    } catch (error) {
+    } catch {
       setIsError(true);
       setMessage("Error recording sale.");
     } finally {

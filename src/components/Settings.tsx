@@ -1,6 +1,7 @@
 import { NavBar } from "./NavBar/NavBar";
 import { SeedsList } from "./SeedsList";
 import { CropsList } from "./CropsList";
+import React from "react";
 
 import styles from "./Pages.module.scss";
 import {
@@ -63,7 +64,7 @@ export const Settings = () => {
       } else {
         setCrops(crops.data);
       }
-    } catch (error) {
+    } catch(error) {
       console.error("Error fetching crops names:", error);
       setMessage("Error fetching crops names.");
       setShowToast(true);
@@ -93,7 +94,7 @@ export const Settings = () => {
         setIsError(true);
         setMessage(response.data.message);
       }
-    } catch (error) {
+    } catch {
       setIsError(true);
       setMessage("Error creating seed.");
     } finally {
@@ -119,7 +120,7 @@ export const Settings = () => {
         setIsError(true);
         setMessage(response.data.message);
       }
-    } catch (error) {
+    } catch {
       setIsError(true);
       setMessage("Error recording sale.");
     } finally {
@@ -147,7 +148,7 @@ export const Settings = () => {
         setIsError(true);
         setMessage(response.data.message);
       }
-    } catch (error) {
+    } catch {
       setIsError(true);
       setMessage("Error creating packaging.");
     } finally {

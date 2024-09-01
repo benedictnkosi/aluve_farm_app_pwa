@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
 import styles from "./Pages.module.scss";
 import axios from "axios";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -42,7 +43,7 @@ export const PackagingList: React.FC<SalesListProps> = ({ refresh }) => {
       } else {
         setPackages(response.data); // Pass response.data instead of salesData.data
       }
-    } catch (error) {
+    } catch(error) {
       console.error("Error fetching sales data", error);
     } finally {
       setLoading(false); // Set loading to false after fetching data

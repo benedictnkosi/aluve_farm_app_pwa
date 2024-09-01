@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
 import styles from "./Pages.module.scss";
 import axios from "axios";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -35,8 +36,8 @@ export const CropsList: React.FC<ListProps> = ({ refreshCrops }) => {
       } else {
         setCrops(response.data); // Pass response.data instead of salesData.data
       }
-    } catch (error) {
-      console.error("Error fetching crops data", error);
+    } catch {
+      console.error("Error fetching sales data");
     } finally {
       setLoading(false); // Set loading to false after fetching data
     }
@@ -48,7 +49,7 @@ export const CropsList: React.FC<ListProps> = ({ refreshCrops }) => {
 
 
   return (
-    <>
+    <React.Fragment>
       {loading ? (
         <div className="text-center">
           <Spinner aria-label="Extra large spinner example" size="xl" />
@@ -72,6 +73,6 @@ export const CropsList: React.FC<ListProps> = ({ refreshCrops }) => {
           </Table.Body>
         </Table>
       )}
-    </>
+    </React.Fragment>
   );
 };

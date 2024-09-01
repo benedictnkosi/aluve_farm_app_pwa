@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Table } from "flowbite-react"; // Import the HiInformationCircle icon from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
 import { Timestamp } from "firebase/firestore";
@@ -5,6 +6,7 @@ import { Spinner } from "flowbite-react";
 import styles from "./Pages.module.scss";
 import axios from "axios";
 import { formatDate } from "./Functions/common";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -57,7 +59,7 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
       } else {
         setTransplants(response.data); // Pass response.data instead of salesData.data
       }
-    } catch (error) {
+    } catch(error) {
       console.error("Error fetching sales data", error);
     } finally {
       setLoading(false); // Set loading to false after fetching data
@@ -81,7 +83,7 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
   let previousDate: string | null = null;
 
   return (
-    <>
+    <React.Fragment>
       {loading ? (
         <div className="text-center">
           <Spinner aria-label="Extra large spinner example" size="xl" />
@@ -129,6 +131,6 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
           </Table>
         </div>
       )}
-    </>
+    </React.Fragment>
   );
 };

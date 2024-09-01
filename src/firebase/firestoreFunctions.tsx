@@ -79,7 +79,7 @@ export async function readDataFromFirestoreByValue(
         `No documents found in ${collectionName} for the provided ${fieldName} and value ${value}`
       );
     }
-  } catch (error) {
+  } catch {
     console.error("Error reading data from Firestore:", error);
     throw new Error("Error reading data from Firestore:");
   }
@@ -111,7 +111,7 @@ export async function getByRefAndValue(
         `No ${refColumn} documents found for the provided farmRef ${refDocument.id}`
       );
     }
-  } catch (error) {
+  } catch {
     console.error("Error reading data from Firestore:", error);
     throw new Error(`No documents found for the provided farmRef`);
   }
@@ -134,7 +134,7 @@ export async function getDocFromFirestoreByValue(
       console.log("Document ID:", docRef.id);
     }
     return docRef;
-  } catch (error) {
+  } catch {
     console.error("Error reading data from Firestore:", error);
     throw new Error(
       `No document found in ${collectionName} for the provided docId ${docId}`
@@ -169,7 +169,7 @@ export async function getVisibleFarmsWithCrop(
       }
     }
     return [] as Item[]; // Add a return statement for the case when querySnapshot is empty
-  } catch (error) {
+  } catch {
     console.error("Error reading data from Firestore:", error);
   }
 }
@@ -189,7 +189,7 @@ export async function readDataFromFirestore(
     } else {
       throw new Error("Document does not exist");
     }
-  } catch (error) {
+  } catch {
     console.error("Error reading data from Firestore:", error);
     throw new Error("Document does not exist");
   }
@@ -202,7 +202,7 @@ export async function createDocument(
   try {
     const userCollection = collection(db, collectionName);
     return await addDoc(userCollection, data);
-  } catch (error) {
+  } catch {
     console.error("Error creating document on Firestore:", error);
   }
 }
@@ -215,7 +215,7 @@ export async function updateRecord(
   try {
     const docRef = doc(db, collectionName, docId);
     await updateDoc(docRef, data);
-  } catch (error) {
+  } catch {
     console.error("Error updating document on Firestore:", error);
   }
 }
@@ -249,7 +249,7 @@ export async function updateRecordByField(
     }
 
     await updateDoc(docRef.ref, data);
-  } catch (error) {
+  } catch {
     console.error("Error updating document on Firestore:", error);
   }
 }
@@ -272,7 +272,7 @@ export async function assignFarmToUser(
       farm: farmRef,
     };
     await updateDoc(userDocRef.ref, userFarmData);
-  } catch (error) {
+  } catch {
     console.error("Error assigning farm to user:", error);
   }
 }
@@ -322,7 +322,7 @@ export async function getSalesWithDetails(): Promise<SaleWithDetails[]> {
     }
 
     return salesWithDetails;
-  } catch (error) {
+  } catch {
     console.error("Error retrieving sales with details:", error);
     throw error;
   }

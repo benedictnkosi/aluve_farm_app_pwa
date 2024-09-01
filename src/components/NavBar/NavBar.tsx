@@ -1,5 +1,6 @@
 import { Navbar } from "flowbite-react";
 import styles from "../Pages.module.scss";
+import React from "react";
 
 export const NavBar = () => {
   return (

@@ -12,7 +12,7 @@ const App = () => {
       try {
         const result = await signInWithPopup(auth, provider);
         console.log(result.user);
-      } catch (error) {
+      } catch {
         console.error(error);
       }
     };

@@ -17,6 +17,7 @@ import { HiCheck, HiInformationCircle } from "react-icons/hi";
 import axios from "axios";
 import { SidebarNav } from "./NavBar/SidebarNav";
 import { formatDate } from "./Functions/common";
+import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -67,7 +68,7 @@ export const Transplant = () => {
       } else {
         setSeedlings(seedlings.data);
       }
-    } catch (error) {
+    } catch(error) {
       console.error("Error fetching seedlings names:", error);
       setMessage("Error fetching seedlings names.");
       setShowToast(true);
@@ -98,7 +99,7 @@ export const Transplant = () => {
         setIsError(true);
         setMessage(response.data.message);
       }
-    } catch (error) {
+    } catch {
       setIsError(true);
       setMessage("Error recording sale.");
     } finally {
