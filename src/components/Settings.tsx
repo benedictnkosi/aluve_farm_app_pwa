@@ -34,7 +34,6 @@ export const Settings = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openCropsModal, setOpenCropsModal] = useState(false);
   const [openPackagingModal, setOpenPackagingModal] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [crops, setCrops] = useState<Item[]>([]);
@@ -157,11 +156,11 @@ export const Settings = () => {
   };
   
   useEffect(() => {
-    if (openModal) {
+    if (openModal || openPackagingModal) {
       setIsError(false);
       getCrops();
     }
-  }, [openModal]);
+  }, [openModal, openPackagingModal]);
 
   return (
     <>
@@ -357,7 +356,7 @@ export const Settings = () => {
 
         {/* Create new packaging modal */}
         <Modal
-            id="CreateModal"
+            id="CreatePackagingModal"
             show={openPackagingModal}
             onClose={() => setOpenPackagingModal(false)}
           >
@@ -372,7 +371,7 @@ export const Settings = () => {
                 )}
 
                 <div>
-                  <Dropdown label={selectedCrop} color="light">
+                <Dropdown label={selectedCrop} color="light">
                     {crops.map((crop, index) => (
                       <Dropdown.Item
                         onClick={() => {
