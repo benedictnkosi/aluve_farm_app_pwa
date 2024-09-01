@@ -121,7 +121,7 @@ export const Transplant = () => {
         <div>
           <div className="flex mt-5">
             <div className={styles["section-header"]}>Transplant History</div>
-            <Button
+            <Button  gradientDuoTone="greenToBlue" outline
               className="ml-auto"
               color="light"
               onClick={() => setOpenModal(true)}
@@ -216,13 +216,13 @@ export const Transplant = () => {
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={() => createTransplant()}>
+              <Button gradientDuoTone="greenToBlue" outline onClick={() => createTransplant()}>
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button color="gray" onClick={() => setOpenModal(false)}>
+              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenModal(false)}>
                 Cancel
               </Button>
             </Modal.Footer>

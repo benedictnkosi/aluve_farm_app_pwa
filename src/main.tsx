@@ -9,8 +9,8 @@ import { Sales } from "./components/Sales";
 import { Seedlings } from "./components/Seedlings";
 import { Transplant } from "./components/Transplant";
 import { Settings } from "./components/Settings";
-
 import ProtectedRoute from "./ProtectedRoute";
+import { CashManagement } from "./components/CashManagement";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +54,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <Settings />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/cash",
+    element: (
+      <ProtectedRoute>
+        <CashManagement />
       </ProtectedRoute>
     ),
   },

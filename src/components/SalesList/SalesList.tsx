@@ -6,6 +6,7 @@ import {
   Label,
   TextInput,
   Toast,
+  Radio,
 } from "flowbite-react";
 import { HiInformationCircle, HiCheck } from "react-icons/hi"; // Import the HiInformationCircle icon from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
@@ -40,6 +41,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
   const [saleId, setSaleId] = useState("");
@@ -78,6 +80,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
         sale_id: saleId,
         date: new Date(),
         amount: amount,
+        paymentMethod: paymentMethod,
         farm_uid: sessionStorage.getItem("farm_uid"),
       });
 
@@ -108,6 +111,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
 
   return (
     <>
+      {/* add payment moday */}
       <Modal
         id="CreateModal"
         show={openModal}
@@ -140,16 +144,40 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
                 }}
               />
             </div>
+
+            <fieldset className="flex max-w-md flex-col gap-4">
+              <legend className="mb-4">Choose your favorite country</legend>
+              <div className="flex items-center gap-2">
+                <Radio
+                onClick={() => {
+                  setPaymentMethod("Cash");
+                }}
+                  id="cash"
+                  name="method"
+                  value="cash"
+                  defaultChecked
+                />
+                <Label htmlFor="cash">Cash</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Radio id="EFT" name="method" value="EFT" 
+                onClick={() => {
+                  setPaymentMethod("EFT");
+                }}
+                />
+                <Label htmlFor="germany">EFT</Label>
+              </div>
+            </fieldset>
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => addPayment()}>
+          <Button gradientDuoTone="greenToBlue" outline onClick={() => addPayment()}>
             {loading && (
               <Spinner aria-label="Spinner button example" size="sm" />
             )}
             <span className="pl-3">Save</span>
           </Button>
-          <Button color="gray" onClick={() => setOpenModal(false)}>
+          <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenModal(false)}>
             Cancel
           </Button>
         </Modal.Footer>
@@ -172,21 +200,11 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
         <div className={styles["table-width-responsive"]}>
           <Table striped className="mt-5">
             <Table.Head className={styles["sticky-header"]}>
-              <Table.HeadCell >
-                Sales Details
-              </Table.HeadCell>
-              <Table.HeadCell >
-                Crop
-              </Table.HeadCell>
-              <Table.HeadCell >
-                Customer
-              </Table.HeadCell>
-              <Table.HeadCell >
-                Units
-              </Table.HeadCell>
-              <Table.HeadCell >
-                Price
-              </Table.HeadCell>
+              <Table.HeadCell>Sales Details</Table.HeadCell>
+              <Table.HeadCell>Crop</Table.HeadCell>
+              <Table.HeadCell>Customer</Table.HeadCell>
+              <Table.HeadCell>Units</Table.HeadCell>
+              <Table.HeadCell>Price</Table.HeadCell>
               <Table.HeadCell>Total</Table.HeadCell>
               <Table.HeadCell>Paid</Table.HeadCell>
               <Table.HeadCell>Payment</Table.HeadCell>
@@ -209,26 +227,18 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
                       key={index}
                       className="bg-white dark:border-gray-700 dark:bg-gray-800"
                     >
-                      <Table.Cell >
+                      <Table.Cell>
                         <p>{sale.crop_name}</p>
                         <p>{sale.customer_name}</p>
                       </Table.Cell>
-                      <Table.Cell >
-                        {sale.crop_name}
-                      </Table.Cell>
-                      <Table.Cell >
-                        {sale.customer_name}
-                      </Table.Cell>
-                      <Table.Cell >
-                        {sale.quantity}
-                      </Table.Cell>
-                      <Table.Cell >
-                        R{sale.price}
-                      </Table.Cell>
+                      <Table.Cell>{sale.crop_name}</Table.Cell>
+                      <Table.Cell>{sale.customer_name}</Table.Cell>
+                      <Table.Cell>{sale.quantity}</Table.Cell>
+                      <Table.Cell>R{sale.price}</Table.Cell>
                       <Table.Cell>R{sale.quantity * sale.price}</Table.Cell>
                       <Table.Cell>R{sale.total_payments}</Table.Cell>
                       <Table.Cell>
-                        <Button
+                        <Button  gradientDuoTone="greenToBlue" outline
                           color="light"
                           size="xs"
                           onClick={() => handleAddPaymentClick(sale.sale_id)}

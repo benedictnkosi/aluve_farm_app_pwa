@@ -107,8 +107,8 @@ const JoinCreateFarm: React.FC<Props> = ({ setIsBelongsToFarm }) => {
       <div className="container mt-4">
         <div className={styles["market-list"]}>
           <div className={styles["button-container"]}>
-            <Button onClick={() => setOpenModal(true)}>Join Farm</Button>
-            <Button color="gray" onClick={() => setOpenCreateModal(true)}>
+            <Button gradientDuoTone="greenToBlue" outline onClick={() => setOpenModal(true)}>Join Farm</Button>
+            <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenCreateModal(true)}>
               Create Farm
             </Button>
           </div>
@@ -134,13 +134,13 @@ const JoinCreateFarm: React.FC<Props> = ({ setIsBelongsToFarm }) => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => joinFarm()}>
+          <Button gradientDuoTone="greenToBlue" outline onClick={() => joinFarm()}>
             {loading && (
               <Spinner aria-label="Spinner button example" size="sm" />
             )}
             <span className="pl-3">Join Now</span>
           </Button>
-          <Button color="gray" onClick={() => setOpenModal(false)}>
+          <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenModal(false)}>
             Cancel
           </Button>
         </Modal.Footer>
@@ -176,13 +176,13 @@ const JoinCreateFarm: React.FC<Props> = ({ setIsBelongsToFarm }) => {
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => createFarm()}>
+          <Button gradientDuoTone="greenToBlue" outline onClick={() => createFarm()}>
             {loading && (
               <Spinner aria-label="Spinner button example" size="sm" />
             )}
             <span className="pl-3">Create Now</span>
           </Button>
-          <Button color="gray" onClick={() => setOpenCreateModal(false)}>
+          <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenCreateModal(false)}>
             Cancel
           </Button>
         </Modal.Footer>

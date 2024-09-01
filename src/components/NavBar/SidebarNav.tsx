@@ -33,6 +33,9 @@ export const SidebarNav = () => {
           <Sidebar.Item href="/settings" icon={HiCog}>
             Settings
           </Sidebar.Item>
+          <Sidebar.Item href="/cash" icon={HiCog}>
+            Cash Management
+          </Sidebar.Item>
           
           <Sidebar.Item href="#" icon={BiBuoy}>
             Logout

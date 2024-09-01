@@ -161,7 +161,7 @@ export const Sales = () => {
         <div>
           <div className="flex mt-5">
             <div className={styles["section-header"]}>Sales History</div>
-            <Button
+            <Button  gradientDuoTone="greenToBlue" outline
               className="ml-auto"
               color="light"
               onClick={() => setOpenModal(true)}
@@ -287,13 +287,13 @@ export const Sales = () => {
             )}
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={() => saveSale()}>
+              <Button gradientDuoTone="greenToBlue" outline onClick={() => saveSale()}>
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button color="gray" onClick={() => setOpenModal(false)}>
+              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenModal(false)}>
                 Cancel
               </Button>
             </Modal.Footer>

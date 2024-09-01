@@ -171,7 +171,7 @@ export const Settings = () => {
           <Tabs.Item active title="Crops" icon={HiCog}>
             <div className="flex mt-5">
               <div className={styles["section-header"]}>Crops</div>
-              <Button
+              <Button  gradientDuoTone="greenToBlue" outline
                 className="ml-auto"
                 color="light"
                 onClick={() => setOpenCropsModal(true)}
@@ -185,7 +185,7 @@ export const Settings = () => {
           <Tabs.Item title="Seeds" icon={HiCog}>
             <div className="flex mt-5">
               <div className={styles["section-header"]}>Seeds</div>
-              <Button
+              <Button  gradientDuoTone="greenToBlue" outline
                 className="ml-auto"
                 color="light"
                 onClick={() => setOpenModal(true)}
@@ -198,7 +198,7 @@ export const Settings = () => {
           <Tabs.Item title="Packaging" icon={HiCog}>
             <div className="flex mt-5">
               <div className={styles["section-header"]}>Packaging</div>
-              <Button
+              <Button  gradientDuoTone="greenToBlue" outline
                 className="ml-auto"
                 color="light"
                 onClick={() => setOpenPackagingModal(true)}
@@ -294,13 +294,13 @@ export const Settings = () => {
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={() => createSeed()}>
+              <Button gradientDuoTone="greenToBlue" outline onClick={() => createSeed()}>
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button color="gray" onClick={() => setOpenModal(false)}>
+              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenModal(false)}>
                 Cancel
               </Button>
             </Modal.Footer>
@@ -342,13 +342,13 @@ export const Settings = () => {
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={() => createCrop()}>
+              <Button gradientDuoTone="greenToBlue" outline onClick={() => createCrop()}>
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button color="gray" onClick={() => setOpenCropsModal(false)}>
+              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenCropsModal(false)}>
                 Cancel
               </Button>
             </Modal.Footer>
@@ -424,13 +424,13 @@ export const Settings = () => {
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={() => createPackaging()}>
+              <Button gradientDuoTone="greenToBlue" outline onClick={() => createPackaging()}>
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button color="gray" onClick={() => setOpenPackagingModal(false)}>
+              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenPackagingModal(false)}>
                 Cancel
               </Button>
             </Modal.Footer>

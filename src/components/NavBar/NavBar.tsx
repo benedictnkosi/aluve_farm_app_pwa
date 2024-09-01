@@ -27,6 +27,7 @@ export const NavBar = () => {
         <Navbar.Link href="/seedlings">Seedlings</Navbar.Link>
         <Navbar.Link href="/transplant">Transplant</Navbar.Link>
         <Navbar.Link href="/settings">Settings</Navbar.Link>
+        <Navbar.Link href="/cash">Cash Management</Navbar.Link>
         <Navbar.Link href="/">logout</Navbar.Link>
       </Navbar.Collapse>
     </Navbar>

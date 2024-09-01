@@ -73,7 +73,7 @@ export const Login: React.FC = () => {
         <p className="text-gray-600 dark:text-gray-400 mb-4 mx-auto">
           Manage your crop farm with ease
         </p>
-        <Button onClick={signIn} className="bg-blue-500 text-white py-2 px-4 rounded mx-auto">
+        <Button gradientDuoTone="greenToBlue" outline onClick={signIn} className="bg-blue-500 text-white py-2 px-4 rounded mx-auto">
           Login With Google
         </Button>
         {showToast && (
