@@ -4,6 +4,7 @@ import React from "react";
 
 export const NavBar = () => {
   return (
+    <React.Fragment>
     <div className={styles["mobile-only"]}>
     <Navbar fluid rounded className="place-content-evenly">
       <Navbar.Brand href="/">
@@ -30,5 +31,6 @@ export const NavBar = () => {
       </Navbar.Collapse>
     </Navbar>
     </div>
+    </React.Fragment>
   );
 };

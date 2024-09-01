@@ -7,7 +7,7 @@ import React from "react";
 
 export const SidebarNav = () => {
   return (
-    // eslint-disable-next-line react/react-in-jsx-scope
+    <React.Fragment>
     <Sidebar className={styles["desktop-only-sideNave"]} aria-label="Sidebar with content separator example">
       <Sidebar.Logo href="#" img="/images/logo.jpeg" imgAlt="Aluve Farm logo">
         Aluve Crop
@@ -40,5 +40,6 @@ export const SidebarNav = () => {
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
+    </React.Fragment>
   );
 };

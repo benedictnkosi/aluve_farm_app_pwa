@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { SidebarNav } from "./NavBar/SidebarNav";
 import React from "react";
 
-
 export const Dashboard = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isBelongsToFarm, setIsBelongsToFarm] = useState<boolean>(false);
@@ -43,10 +42,10 @@ export const Dashboard = () => {
   }
 
   return (
-    <>
+    <React.Fragment>
       <div className="flex">
-      <NavBar />
-        <SidebarNav/>
+      {isBelongsToFarm &&(<NavBar />)}
+      {isBelongsToFarm &&(<SidebarNav />)}
         <div className="container mt-4">
           <div className={styles["market-list"]}>
             <div className={styles["container"]}>
@@ -58,6 +57,6 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 };

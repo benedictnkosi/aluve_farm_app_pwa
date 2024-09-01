@@ -9,9 +9,13 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const [user, loading] = useAuthState(auth);
 
   if (loading) {
-    return <div className="text-center">
-    <Spinner aria-label="Extra large spinner example" size="xl" />
-  </div>;
+    return (
+      <React.Fragment>
+        <div className="text-center">
+          <Spinner aria-label="Extra large spinner example" size="xl" />
+        </div>
+      </React.Fragment>
+    );
   }
 
   if (!user) {

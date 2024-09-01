@@ -81,7 +81,7 @@ export const Sales = () => {
       } else {
         setCustomers(response.data);
       }
-    } catch {
+    } catch(error) {
       console.error("Error fetching customer names:", error);
       return [];
     }
@@ -104,7 +104,7 @@ export const Sales = () => {
       } else {
         setPackages(response.data); // Pass response.data instead of salesData.data
       }
-    } catch {
+    } catch(error) {
       console.error("Error fetching sales data", error);
     } finally {
       setLoading(false); // Set loading to false after fetching data
