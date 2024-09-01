@@ -1,0 +1,103 @@
+.market-list {
+  position: relative;
+  height: fit-content;
+  padding-bottom: 1rem;
+  min-height: 100%;
+  font-size: 15px;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap; /* Allows buttons to wrap to the next line if they overflow */
+  gap: 10px; /* Adds space between buttons */
+}
+
+.button-container button {
+  flex: 1 1 auto; /* Allows buttons to grow and shrink as needed */
+}
+
+.section-header {
+  font-size: 1.2rem;
+    font-weight: 200;
+    margin-bottom: 1rem;
+}
+
+.main-header {
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.card-container {
+  display: flex;
+  justify-content: space-between; /* Adjust as needed */
+  gap: 1rem; /* Adjust the gap between cards as needed */
+  flex-wrap: wrap;
+}
+
+.card-container-no-wrap {
+  display: flex;
+  justify-content: space-between; /* Adjust as needed */
+  gap: 1rem; /* Adjust the gap between cards as needed */
+  flex-wrap: nowrap;
+}
+
+
+
+
+.negative-margin-left {
+  margin-left: -20px;
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white; /* Ensure the header has a background */
+  z-index: 1; /* Ensure the header is above other content */
+}
+
+.place-content-evenly{
+  justify-content: space-evenly;
+}
+
+.custom-image-height {
+  height: 200px; /* Set your desired height */
+  object-fit: cover; /* Ensure the image covers the area */
+  width: 100%; /* Ensure the image takes the full width of the container */
+}
+
+
+@media (max-width: 640px) {
+  .table-width-responsive {
+    overflow-x: auto;
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 400px) {
+  .table-width-responsive {
+    overflow-x: auto;
+    max-width: 350px;
+  }
+}
+
+
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .desktop-only-sideNave{
+    display: none;
+  }
+
+}
+
+@media (min-width: 767px) {
+  .mobile-only {
+    display: none;
+  }
+  .desktop-only-sideNave{
+    margin-right:3em;
+  }
+}

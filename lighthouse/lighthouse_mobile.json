@@ -1,0 +1,13 @@
+{
+    "extends": "lighthouse:default",
+    "settings": {
+      "throttling": {
+        "rttMs": 40,
+        "throughputKbps": 20000,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 20000,
+        "uploadThroughputKbps": 5000,
+        "cpuSlowdownMultiplier": 1
+      }
+    }
+  }

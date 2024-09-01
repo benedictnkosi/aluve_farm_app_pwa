@@ -1,0 +1,22 @@
+{
+  "extends": "lighthouse:default",
+  "settings": {
+    "emulatedFormFactor": "desktop",
+    "throttling": {
+      "rttMs": 40,
+      "throughputKbps": 40000,
+      "requestLatencyMs": 0,
+      "downloadThroughputKbps": 40000,
+      "uploadThroughputKbps": 10000,
+      "cpuSlowdownMultiplier": 1
+    },
+    "screenEmulation": {
+      "mobile": false,
+      "width": 1350,
+      "height": 940,
+      "deviceScaleFactor": 1,
+      "disabled": false
+    },
+    "formFactor": "desktop"
+  }
+}
