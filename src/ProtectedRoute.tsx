@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebaseConfig";
 import { Spinner } from "flowbite-react";
+import React from "react";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const [user, loading] = useAuthState(auth);
