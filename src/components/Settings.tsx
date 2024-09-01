@@ -220,7 +220,7 @@ export const Settings = () => {
             <div>Customers</div>
           </Tabs.Item>
           <Tabs.Item title="Joining ID" icon={HiCog}>
-            <div>Joining ID</div>
+            <div>{sessionStorage.getItem("farm_uid")}</div>
           </Tabs.Item>
         </Tabs>
 

@@ -61,19 +61,35 @@ export const Login: React.FC = () => {
     }
   };
 
+  const GoogleImage = "/images/login-image.png";
   return (
     <>
+       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center max-w-md">
+        <img src={GoogleImage} alt="Google Logo" className="w-64 mx-auto mb-4" />
+        <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-200 mb-2">
+          ALUVE CROP APP
+        </h2>
+        <p className="text-gray-600 dark:text-gray-400 mb-4 mx-auto">
+          Manage your crop farm with ease
+        </p>
+        <Button onClick={signIn} className="bg-blue-500 text-white py-2 px-4 rounded mx-auto">
+          Login With Google
+        </Button>
+        {showToast && (
+          <Toast className="mt-4">
+            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
+              <HiExclamation className="h-5 w-5" />
+            </div>
+            <div className="ml-3 text-sm font-normal">
+              Failed to register user. Please refresh and try again.
+            </div>
+            <Toast.Toggle />
+          </Toast>
+        )}
+      </div>
+    </div>
       
-      <Button onClick={signIn}>Login With Google</Button>
-      {showToast && (
-        <Toast>
-          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-            <HiExclamation className="h-5 w-5" />
-          </div>
-          <div className="ml-3 text-sm font-normal">Failed to register user. Please refresh and try again</div>
-          <Toast.Toggle />
-        </Toast>
-      )}
     </>
   );
 };
