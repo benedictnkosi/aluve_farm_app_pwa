@@ -62,10 +62,9 @@ export const CashManagementList: React.FC<SalesListProps> = ({ refresh }) => {
           <Table striped className="mt-5">
             <Table.Head className={styles["sticky-header"]}>
               <Table.HeadCell>Date</Table.HeadCell>
-              <Table.HeadCell>Amount</Table.HeadCell>
               <Table.HeadCell>Comment</Table.HeadCell>
+              <Table.HeadCell>Amount</Table.HeadCell>
               <Table.HeadCell>Balance</Table.HeadCell>
-              <Table.HeadCell></Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {report.map((reportRecord, index) => {
@@ -78,7 +77,7 @@ export const CashManagementList: React.FC<SalesListProps> = ({ refresh }) => {
                       className="bg-white dark:border-gray-700 dark:bg-gray-800"
                     >
                       <Table.Cell>{formatShortDate(reportRecord.date)}</Table.Cell>
-                      <Table.Cell>{reportRecord.comment}</Table.Cell>s
+                      <Table.Cell>{reportRecord.comment}</Table.Cell>
                       <Table.Cell>R{reportRecord.amount}</Table.Cell>
                       <Table.Cell>R{reportRecord.running_balance}</Table.Cell>
                     </Table.Row>
