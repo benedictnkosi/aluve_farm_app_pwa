@@ -388,12 +388,12 @@ export const Settings = () => {
 
                 <div>
                   <div className="mb-2 block">
-                    <Label htmlFor="packagingName" value="name" />
+                    <Label htmlFor="packagingName" value="Name" />
                   </div>
                   <TextInput
                     id="packagingName"
                     type="text"
-                    placeholder="Conquistador F1 Hybrid Cabbage"
+                    placeholder="Spinach Bunch"
                     required
                     value={packagingName}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -406,12 +406,12 @@ export const Settings = () => {
 
                 <div>
                   <div className="mb-2 block">
-                    <Label htmlFor="weight" value="weight" />
+                    <Label htmlFor="weight" value="Weight" />
                   </div>
                   <TextInput
                     id="weight"
-                    type="text"
-                    placeholder="Sakata"
+                    type="number"
+                    placeholder="6"
                     required
                     value={weight}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
