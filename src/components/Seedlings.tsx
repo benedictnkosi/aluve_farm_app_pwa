@@ -70,7 +70,7 @@ export const Seedlings = () => {
     try {
       const response = await axios.post(`${apiUrl}/public/seedling/create`, {
         seed_id: selectedSeedId,
-        quantity: 1000,
+        quantity: quantity,
         seedling_date: seedlingDate,
         transplant_date: transplantDate,
         farm_uid: sessionStorage.getItem("farm_uid"),
