@@ -16,7 +16,7 @@ export const Dashboard = () => {
     setLoading(true);
     try {
       const user = auth.currentUser;
-      if (user) {
+      if (user && sessionStorage.getItem("google_uid")) {
         if (sessionStorage.getItem("farm_uid")) {
           setIsBelongsToFarm(true);
         } else {
