@@ -14,9 +14,9 @@ export default defineConfig({
       registerType: "autoUpdate",
 
       manifest: {
-        name: "Fresh Market Prices",
-        short_name: "Fresh Prices",
-        description: "Fresh Market Prices is a web application that helps you to get the latest prices of fresh products.",
+        name: "aluve-crop",
+        short_name: "aluve-crop",
+        description: "Aluve crop is a web application that helps you manage your crop farm",
         theme_color: "#ffffff",
 
         icons: [

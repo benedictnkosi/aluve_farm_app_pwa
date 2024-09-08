@@ -235,7 +235,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
                       <Table.Cell>{sale.customer_name}</Table.Cell>
                       <Table.Cell>{sale.quantity}</Table.Cell>
                       <Table.Cell>R{sale.price}</Table.Cell>
-                      <Table.Cell>R{sale.quantity * sale.price}</Table.Cell>
+                      <Table.Cell>R{(sale.quantity * sale.price).toFixed(2)}</Table.Cell>
                       <Table.Cell>R{sale.total_payments}</Table.Cell>
                       <Table.Cell>
                         <Button  gradientDuoTone="greenToBlue" outline

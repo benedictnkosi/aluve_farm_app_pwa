@@ -1,5 +1,5 @@
 {
-  "name": "agri-prices-pwa",
+  "name": "aluve-crop-pwa",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -19,6 +19,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@vercel/analytics": "^1.3.1",
     "agri-prices-pwa": "file:",
+    "aluve-crop-pwa": "file:",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "digital-ticketing-pwa": "file:",
