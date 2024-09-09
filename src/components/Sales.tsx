@@ -73,7 +73,7 @@ export const Sales = () => {
     try {
       const farmUid = sessionStorage.getItem("farm_uid") ?? "";
       const response = await axios.get(
-        `${apiUrl}/public/customers/get?farm_uid=${farmUid}`
+        `${apiUrl}/public/customers/get?farm_uid=${farmUid}&type=customer`
       );
       if (response.data.status === "NOK") {
         setMessage(response.data.message);
