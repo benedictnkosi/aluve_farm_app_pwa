@@ -389,6 +389,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                                   onClick={() => {
                                     setOpenModal(true);
                                     setSaleId(sale.id);
+                                    setAmount((sale.quantity * sale.price).toString());
                                   }}
                                 >
                                   <HiOutlineCash className="h-4 w-4" />
