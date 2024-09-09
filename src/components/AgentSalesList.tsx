@@ -9,7 +9,7 @@ import {
   Datepicker,
   Table,
 } from "flowbite-react";
-import { HiInformationCircle, HiCheck, HiOutlineCash  } from "react-icons/hi"; // Import the HiInformationCircle and HiOutlineArrowRight icons from the react-icons/hi package
+import { HiInformationCircle, HiCheck, HiOutlineCash } from "react-icons/hi"; // Import the HiInformationCircle and HiOutlineArrowRight icons from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
 import styles from "./Pages.module.scss";
@@ -355,13 +355,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                               setCrop(delivery.crop_name);
                             }}
                           >
-                            {loading && (
-                              <Spinner
-                                aria-label="Spinner button example"
-                                size="sm"
-                              />
-                            )}
-                            <span className="pl-3">Add Sale</span>
+                            <span>Add Sale</span>
                           </Button>
                         </div>
                       </Table.Cell>
@@ -384,16 +378,22 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                               R{sale.total_paid.toFixed(2)}
                             </Table.Cell>
                             <Table.Cell>
-                              <Button outline
-                              color="light"
-                                
-                                onClick={() => {
-                                  setOpenModal(true);
-                                  setSaleId(sale.id);
-                                }}
-                              >
-                                <HiOutlineCash  className="h-4 w-4" />
-                              </Button>
+                              {sale.total_paid >= sale.quantity * sale.price ? (
+                                <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                                  <HiCheck className="h-5 w-5" />
+                                </div>
+                              ) : (
+                                <Button
+                                  outline
+                                  color="light"
+                                  onClick={() => {
+                                    setOpenModal(true);
+                                    setSaleId(sale.id);
+                                  }}
+                                >
+                                  <HiOutlineCash className="h-4 w-4" />
+                                </Button>
+                              )}
                             </Table.Cell>
                           </Table.Row>
                         )

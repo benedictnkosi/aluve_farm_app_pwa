@@ -8,7 +8,7 @@ import {
   Toast,
   Radio,
 } from "flowbite-react";
-import { HiInformationCircle, HiCheck } from "react-icons/hi"; // Import the HiInformationCircle icon from the react-icons/hi package
+import { HiInformationCircle, HiCheck,HiOutlineCash } from "react-icons/hi"; // Import the HiInformationCircle icon from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
 import styles from "../Pages.module.scss";
@@ -149,9 +149,9 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
               <legend className="mb-4">Choose your favorite country</legend>
               <div className="flex items-center gap-2">
                 <Radio
-                onClick={() => {
-                  setPaymentMethod("Cash");
-                }}
+                  onClick={() => {
+                    setPaymentMethod("Cash");
+                  }}
                   id="cash"
                   name="method"
                   value="cash"
@@ -160,10 +160,13 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
                 <Label htmlFor="cash">Cash</Label>
               </div>
               <div className="flex items-center gap-2">
-                <Radio id="EFT" name="method" value="EFT" 
-                onClick={() => {
-                  setPaymentMethod("EFT");
-                }}
+                <Radio
+                  id="EFT"
+                  name="method"
+                  value="EFT"
+                  onClick={() => {
+                    setPaymentMethod("EFT");
+                  }}
                 />
                 <Label htmlFor="germany">EFT</Label>
               </div>
@@ -171,13 +174,22 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button gradientDuoTone="greenToBlue" outline onClick={() => addPayment()}>
+          <Button
+            gradientDuoTone="greenToBlue"
+            outline
+            onClick={() => addPayment()}
+          >
             {loading && (
               <Spinner aria-label="Spinner button example" size="sm" />
             )}
             <span className="pl-3">Save</span>
           </Button>
-          <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenModal(false)}>
+          <Button
+            gradientDuoTone="greenToBlue"
+            outline
+            color="gray"
+            onClick={() => setOpenModal(false)}
+          >
             Cancel
           </Button>
         </Modal.Footer>
@@ -235,16 +247,26 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
                       <Table.Cell>{sale.customer_name}</Table.Cell>
                       <Table.Cell>{sale.quantity}</Table.Cell>
                       <Table.Cell>R{sale.price}</Table.Cell>
-                      <Table.Cell>R{(sale.quantity * sale.price).toFixed(2)}</Table.Cell>
+                      <Table.Cell>
+                        R{(sale.quantity * sale.price).toFixed(2)}
+                      </Table.Cell>
                       <Table.Cell>R{sale.total_payments}</Table.Cell>
                       <Table.Cell>
-                        <Button  gradientDuoTone="greenToBlue" outline
-                          color="light"
-                          size="xs"
-                          onClick={() => handleAddPaymentClick(sale.sale_id)}
-                        >
-                          Add Payment
-                        </Button>
+                        {Number(sale.total_payments) >= (sale.quantity * sale.price) ? (
+                          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                            <HiCheck className="h-5 w-5" />
+                          </div>
+                        ) : (
+                          <Button
+                            outline
+                            color="light"
+                            onClick={() => {
+                              handleAddPaymentClick(sale.sale_id);
+                            }}
+                          >
+                            <HiOutlineCash className="h-4 w-4" />
+                          </Button>
+                        )}
                       </Table.Cell>
                     </Table.Row>
                   </Fragment>
