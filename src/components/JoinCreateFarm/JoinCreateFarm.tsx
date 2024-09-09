@@ -44,7 +44,7 @@ const JoinCreateFarm: React.FC<Props> = ({ setIsBelongsToFarm }) => {
         });
 
         if (response.data.status === "OK") {
-          sessionStorage.setItem("farm_uid", farmUid);
+          localStorage.setItem("farm_uid", farmUid);
           setOpenModal(false);
           setShowToast(true);
           setMessage(response.data.message);
@@ -80,7 +80,7 @@ const JoinCreateFarm: React.FC<Props> = ({ setIsBelongsToFarm }) => {
         });
 
         if (response.data.status === "OK") {
-          sessionStorage.setItem("farm_uid", response.data.farm_uid);
+          localStorage.setItem("farm_uid", response.data.farm_uid);
           setOpenModal(false);
           setShowToast(true);
           setMessage(response.data.message);

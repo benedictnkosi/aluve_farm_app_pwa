@@ -29,7 +29,7 @@ export const CashManagementList: React.FC<SalesListProps> = ({ refresh }) => {
     setLoading(true); // Set loading to true before fetching data
 
     try {
-      const farmUid = sessionStorage.getItem("farm_uid") ?? "";
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
       const response = await axios.get(
         `${apiUrl}/public/cash/report?farm_uid=${farmUid}`
       );

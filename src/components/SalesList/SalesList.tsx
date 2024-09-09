@@ -50,7 +50,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
     setLoading(true); // Set loading to true before fetching data
 
     try {
-      const farmUid = sessionStorage.getItem("farm_uid") ?? "";
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
       const response = await axios.get(
         `${apiUrl}/public/sales/get?farm_uid=${farmUid}`
       );
@@ -81,7 +81,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
         date: new Date(),
         amount: amount,
         paymentMethod: paymentMethod,
-        farm_uid: sessionStorage.getItem("farm_uid"),
+        farm_uid: localStorage.getItem("farm_uid"),
       });
 
       if (response.data.status === "OK") {
@@ -122,8 +122,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
           <form className="flex max-w-md flex-col gap-4">
             {isError && (
               <Alert color="failure" icon={HiInformationCircle}>
-                <span className="font-medium">Info alert!</span> Failed to add
-                payment.
+                <span className="font-medium">Info alert!</span> {message}
               </Alert>
             )}
 

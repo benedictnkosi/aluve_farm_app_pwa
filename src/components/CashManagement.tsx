@@ -40,7 +40,7 @@ export const CashManagement = () => {
         amount: amount,
         comment: comment,
         date: withdrawDate,
-        farm_uid: sessionStorage.getItem("farm_uid"),
+        farm_uid: localStorage.getItem("farm_uid"),
       });
 
       if (response.data.status === "OK") {
@@ -89,8 +89,7 @@ export const CashManagement = () => {
               <form className="flex max-w-md flex-col gap-4">
                 {isError && (
                   <Alert color="failure" icon={HiInformationCircle}>
-                    <span className="font-medium">Info alert!</span> Faield to
-                    withdraw cash.
+                    <span className="font-medium">Info alert!</span> {message}
                   </Alert>
                 )}
 

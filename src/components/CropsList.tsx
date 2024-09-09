@@ -26,7 +26,7 @@ export const CropsList: React.FC<ListProps> = ({ refreshCrops }) => {
     setLoading(true); // Set loading to true before fetching data
 
     try {
-      const farmUid = sessionStorage.getItem("farm_uid") ?? "";
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
       const response = await axios.get(
         `${apiUrl}/public/crops/get?farm_uid=${farmUid}`
       );

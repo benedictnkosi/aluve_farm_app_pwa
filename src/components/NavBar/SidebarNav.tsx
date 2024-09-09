@@ -6,6 +6,12 @@ import styles from "../Pages.module.scss";
 import React from "react";
 
 export const SidebarNav = () => {
+  const handleLogout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = "/";
+  };
+
   return (
     <React.Fragment>
     <Sidebar className={styles["desktop-only-sideNave"]} aria-label="Sidebar with content separator example">
@@ -40,7 +46,7 @@ export const SidebarNav = () => {
             Cash Management
           </Sidebar.Item>
           
-          <Sidebar.Item href="#" icon={BiBuoy}>
+          <Sidebar.Item href="#" icon={BiBuoy} onClick={handleLogout}>
             Logout
           </Sidebar.Item>
         </Sidebar.ItemGroup>

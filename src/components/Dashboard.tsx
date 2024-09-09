@@ -4,6 +4,7 @@ import styles from "./Pages.module.scss";
 import { NavBar } from "./NavBar/NavBar";
 import { auth } from "../../firebaseConfig";
 import JoinCreateFarm from "./JoinCreateFarm/JoinCreateFarm";
+import { DailySales } from "./Graph/DailySales";
 import { useNavigate } from "react-router-dom";
 import { SidebarNav } from "./NavBar/SidebarNav";
 import React from "react";
@@ -17,7 +18,7 @@ export const Dashboard = () => {
     try {
       const user = auth.currentUser;
       if (user && sessionStorage.getItem("google_uid")) {
-        if (sessionStorage.getItem("farm_uid")) {
+        if (localStorage.getItem("farm_uid")) {
           setIsBelongsToFarm(true);
         } else {
           setIsBelongsToFarm(false);
@@ -49,7 +50,7 @@ export const Dashboard = () => {
         <div className="container mt-4">
           <div className={styles["market-list"]}>
             <div className={styles["container"]}>
-              {isBelongsToFarm && <div>Hello, Farm Owner!</div>}
+              {isBelongsToFarm && <div><DailySales></DailySales></div>}
               {!isBelongsToFarm && (
                 <JoinCreateFarm setIsBelongsToFarm={setIsBelongsToFarm} />
               )}

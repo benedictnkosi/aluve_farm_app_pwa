@@ -51,7 +51,7 @@ export const Login: React.FC = () => {
         }
       }else{
         if (userResponse.data.farm && userResponse.data.farm.uid) {
-          sessionStorage.setItem("farm_uid", userResponse.data.farm.uid);
+          localStorage.setItem("farm_uid", userResponse.data.farm.uid);
         }
         sessionStorage.setItem("google_uid", userResponse.data.googleuid);
         navigate("/dashboard");

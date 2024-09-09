@@ -48,7 +48,7 @@ export const AgentSales = () => {
   const getCropNames = async () => {
     try {
       setLoading(true);
-      const farmUid = sessionStorage.getItem("farm_uid") ?? "";
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
       const crops = await axios.get(
         `${apiUrl}/public/crops/get?farm_uid=${farmUid}`
       );
@@ -70,7 +70,7 @@ export const AgentSales = () => {
 
   const getCustomerNames = async () => {
     try {
-      const farmUid = sessionStorage.getItem("farm_uid") ?? "";
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
       const response = await axios.get(
         `${apiUrl}/public/customers/get?farm_uid=${farmUid}&type=agent`
       );
@@ -92,7 +92,7 @@ export const AgentSales = () => {
     setSelectedPackageId("");
 
     try {
-      const farmUid = sessionStorage.getItem("farm_uid") ?? "";
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
       const response = await axios.get(
         `${apiUrl}/public/packaging/get?farm_uid=${farmUid}&crop_id=${selectedCropId}`
       );
@@ -120,7 +120,7 @@ export const AgentSales = () => {
         crop_id: selectedCropId,
         packaging_id: selectedPackageId,
         quantity: quantity,
-        farm_uid: sessionStorage.getItem("farm_uid"),
+        farm_uid: localStorage.getItem("farm_uid"),
       });
 
       if (response.data.status === "OK") {
@@ -187,8 +187,7 @@ export const AgentSales = () => {
               <form className="flex max-w-md flex-col gap-4">
               {isError && (
                 <Alert color="failure" icon={HiInformationCircle}>
-                  <span className="font-medium">Info alert!</span> Change a
-                  few things up and try submitting again.
+                  <span className="font-medium">Info alert!</span> {message}
                 </Alert>
               )}
 

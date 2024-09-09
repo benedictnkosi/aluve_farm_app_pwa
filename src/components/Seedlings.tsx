@@ -44,7 +44,7 @@ export const Seedlings = () => {
   const getSeeds = async () => {
     try {
       setLoading(true);
-      const farmUid = sessionStorage.getItem("farm_uid") ?? "";
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
       const seeds = await axios.get(
         `${apiUrl}/public/seeds/get?farm_uid=${farmUid}`
       );
@@ -73,7 +73,7 @@ export const Seedlings = () => {
         quantity: quantity,
         seedling_date: seedlingDate,
         transplant_date: transplantDate,
-        farm_uid: sessionStorage.getItem("farm_uid"),
+        farm_uid: localStorage.getItem("farm_uid"),
       });
 
       if (response.data.status === "OK") {
@@ -129,8 +129,7 @@ export const Seedlings = () => {
               <form className="flex max-w-md flex-col gap-4">
                 {isError && (
                   <Alert color="failure" icon={HiInformationCircle}>
-                    <span className="font-medium">Info alert!</span> Faield to
-                    create seedlings.
+                    <span className="font-medium">Info alert!</span> {message}
                   </Alert>
                 )}
 

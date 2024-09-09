@@ -53,7 +53,7 @@ export const Settings = () => {
   const getCrops = async () => {
     try {
       setLoading(true);
-      const farmUid = sessionStorage.getItem("farm_uid") ?? "";
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
       const crops = await axios.get(
         `${apiUrl}/public/crops/get?farm_uid=${farmUid}`
       );
@@ -81,7 +81,7 @@ export const Settings = () => {
         name: seedName,
         manufacture: manufacture,
         crop_id: selectedCropId,
-        farm_uid: sessionStorage.getItem("farm_uid"),
+        farm_uid: localStorage.getItem("farm_uid"),
       });
 
       if (response.data.status === "OK") {
@@ -107,7 +107,7 @@ export const Settings = () => {
     try {
       const response = await axios.post(`${apiUrl}/public/crop/create`, {
         name: cropName,
-        farm_uid: sessionStorage.getItem("farm_uid"),
+        farm_uid: localStorage.getItem("farm_uid"),
       });
 
       if (response.data.status === "OK") {
@@ -135,7 +135,7 @@ export const Settings = () => {
         name: packagingName,
         weight: weight,
         crop_id: selectedCropId,
-        farm_uid: sessionStorage.getItem("farm_uid"),
+        farm_uid: localStorage.getItem("farm_uid"),
       });
 
       if (response.data.status === "OK") {
@@ -219,7 +219,7 @@ export const Settings = () => {
             <div>Customers</div>
           </Tabs.Item>
           <Tabs.Item title="Joining ID" icon={HiCog}>
-            <div>{sessionStorage.getItem("farm_uid")}</div>
+            <div>{localStorage.getItem("farm_uid")}</div>
           </Tabs.Item>
         </Tabs>
 
@@ -235,8 +235,7 @@ export const Settings = () => {
               <form className="flex max-w-md flex-col gap-4">
                 {isError && (
                   <Alert color="failure" icon={HiInformationCircle}>
-                    <span className="font-medium">Info alert!</span> Faield to
-                    create seed.
+                    <span className="font-medium">Info alert!</span> {message}
                   </Alert>
                 )}
 
@@ -317,8 +316,7 @@ export const Settings = () => {
               <form className="flex max-w-md flex-col gap-4">
                 {isError && (
                   <Alert color="failure" icon={HiInformationCircle}>
-                    <span className="font-medium">Info alert!</span> Faield to
-                    create crop.
+                    <span className="font-medium">Info alert!</span> {message}
                   </Alert>
                 )}
 
@@ -365,8 +363,7 @@ export const Settings = () => {
               <form className="flex max-w-md flex-col gap-4">
                 {isError && (
                   <Alert color="failure" icon={HiInformationCircle}>
-                    <span className="font-medium">Info alert!</span> Faield to
-                    create packaging.
+                    <span className="font-medium">Info alert!</span> {message}
                   </Alert>
                 )}
 
