@@ -20,6 +20,9 @@ export const SidebarNav = () => {
           <Sidebar.Item href="/sales" icon={HiTrendingUp }>
             Sales
           </Sidebar.Item>
+          <Sidebar.Item href="/agentsales" icon={HiTrendingUp }>
+            Agent Sales
+          </Sidebar.Item>
           <Sidebar.Item href="/seedlings" icon={HiArrowSmRight}>
             Seedlings
           </Sidebar.Item>

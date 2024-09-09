@@ -11,6 +11,7 @@ import { Transplant } from "./components/Transplant";
 import { Settings } from "./components/Settings";
 import ProtectedRoute from "./ProtectedRoute";
 import { CashManagement } from "./components/CashManagement";
+import { AgentSales } from "./components/AgentSales";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <CashManagement />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/agentsales",
+    element: (
+      <ProtectedRoute>
+        <AgentSales />
       </ProtectedRoute>
     ),
   },

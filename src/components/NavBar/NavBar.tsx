@@ -24,6 +24,7 @@ export const NavBar = () => {
           Home
         </Navbar.Link>
         <Navbar.Link href="/sales">Sales</Navbar.Link>
+        <Navbar.Link href="/agentsales">Agent Sales</Navbar.Link>
         <Navbar.Link href="/seedlings">Seedlings</Navbar.Link>
         <Navbar.Link href="/transplant">Transplant</Navbar.Link>
         <Navbar.Link href="/settings">Settings</Navbar.Link>
