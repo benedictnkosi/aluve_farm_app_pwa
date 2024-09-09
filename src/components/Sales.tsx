@@ -192,6 +192,22 @@ export const Sales = () => {
                 </Alert>
               )}
 
+<div>
+                <Dropdown label={selectedCustomer} color="light">
+                  {customers.map((customer, index) => (
+                    <Dropdown.Item
+                      onClick={() => {
+                        setSelectedCustomer(customer.name);
+                        setSelectedId(customer.id);
+                      }}
+                      key={index}
+                    >
+                      {customer.name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown>
+              </div>
+              
               <div>
                 <Dropdown label={selectedCrop} color="light">
                   {crops.map((crop, index) => (
@@ -208,21 +224,7 @@ export const Sales = () => {
                 </Dropdown>
               </div>
 
-              <div>
-                <Dropdown label={selectedCustomer} color="light">
-                  {customers.map((customer, index) => (
-                    <Dropdown.Item
-                      onClick={() => {
-                        setSelectedCustomer(customer.name);
-                        setSelectedId(customer.id);
-                      }}
-                      key={index}
-                    >
-                      {customer.name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown>
-              </div>
+              
 
               <div>
                 <Dropdown label={selectedPackage} color="light">

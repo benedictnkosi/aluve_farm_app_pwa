@@ -1,12 +1,14 @@
 import { NavBar } from "./NavBar/NavBar";
 import { SeedsList } from "./SeedsList";
 import { CropsList } from "./CropsList";
+import { CustomerList } from "./CustomerList";
 import React from "react";
 
 import styles from "./Pages.module.scss";
 import {
   Alert,
   Button,
+  Checkbox, // Import Checkbox component
   Dropdown,
   Label,
   Modal,
@@ -47,6 +49,13 @@ export const Settings = () => {
   const [message, setMessage] = useState("");
   const [refresh, setRefresh] = useState<boolean>(false); // Add state for refresh
   const [refreshCrops, setRefreshCrops] = useState<boolean>(false); // Add state for refresh
+  const [refreshCustomers, setRefreshCustomers] = useState<boolean>(false); // Add state for refresh
+  const [isAgent, setIsAgent] = useState<boolean>(false); // Add state for refresh
+  const [contactPerson, setContactPerson] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [openCustomerModal, setOpenCustomerModal] = useState<boolean>(false); // Add state for refresh
+  const [customerName, setCustomerName] = useState("");
+
 
   const [isError, setIsError] = useState(false);
 
@@ -101,6 +110,37 @@ export const Settings = () => {
     }
   };
 
+  const createCustomer = async () => {
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`${apiUrl}/public/customer/create`, {
+        name: customerName,
+        contact_person: contactPerson,
+        phone_number: contactNumber,
+        is_agent: isAgent,
+        farm_uid: localStorage.getItem("farm_uid"),
+      });
+
+      if (response.data.status === "OK") {
+        setShowToast(true);
+        setIsError(false);
+        setMessage(response.data.message);
+        setRefreshCustomers(!refreshCustomers);
+        setOpenCustomerModal(false);
+      } else {
+        setIsError(true);
+        setMessage(response.data.message);
+      }
+    } catch {
+      setIsError(true);
+      setMessage("Error recording sale.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const createCrop = async () => {
     setLoading(true);
 
@@ -112,6 +152,7 @@ export const Settings = () => {
 
       if (response.data.status === "OK") {
         setShowToast(true);
+        setIsError(false);
         setMessage(response.data.message);
         setRefreshCrops(!refreshCrops);
         setOpenCropsModal(false);
@@ -140,6 +181,7 @@ export const Settings = () => {
 
       if (response.data.status === "OK") {
         setShowToast(true);
+        setIsError(false);
         setMessage(response.data.message);
         setRefresh(!refresh);
         setOpenPackagingModal(false);
@@ -216,7 +258,18 @@ export const Settings = () => {
           </Tabs.Item>
           
           <Tabs.Item title="Customers" icon={HiCog}>
-            <div>Customers</div>
+          <div className="flex mt-5">
+              <div className={styles["section-header"]}>Customers</div>
+              <Button  gradientDuoTone="greenToBlue" outline
+                className="ml-auto"
+                color="light"
+                onClick={() => setOpenCustomerModal(true)}
+              >
+                Add New Customer
+              </Button>
+            </div>
+
+            <CustomerList refreshCustomers={refreshCustomers} />
           </Tabs.Item>
           <Tabs.Item title="Joining ID" icon={HiCog}>
             <div>{localStorage.getItem("farm_uid")}</div>
@@ -224,6 +277,103 @@ export const Settings = () => {
         </Tabs>
 
         <div>
+
+          {/* Create new seed modal */}
+          <Modal
+            id="CreateCustomerModal"
+            show={openCustomerModal}
+            onClose={() => setOpenCustomerModal(false)}
+          >
+            <Modal.Header>Create New Customer</Modal.Header>
+            <Modal.Body>
+              <form className="flex max-w-md flex-col gap-4">
+                {isError && (
+                  <Alert color="failure" icon={HiInformationCircle}>
+                    <span className="font-medium">Info alert!</span> {message}
+                  </Alert>
+                )}
+
+                <div>
+                  <div className="mb-2 block">
+                    <Label htmlFor="customerName" value="name" />
+                  </div>
+                  <TextInput
+                    id="customerName"
+                    type="text"
+                    placeholder="Makro Springfield"
+                    required
+                    value={customerName}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      if (event && event.target) {
+                        setCustomerName(event.target.value);
+                      }
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                  id="isAgent"
+                  checked={isAgent}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setIsAgent(event.target.checked);
+                  }}
+                  />
+                  <Label htmlFor="isAgent">Is this an agent</Label>
+                </div>
+
+                <div>
+                  <div className="mb-2 block">
+                    <Label htmlFor="contactPerson" value="Contact Person" />
+                  </div>
+                  <TextInput
+                    id="contactPerson"
+                    type="text"
+                    placeholder="Benedict"
+                    required
+                    value={contactPerson}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      if (event && event.target) {
+                        setContactPerson(event.target.value);
+                      }
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <div className="mb-2 block">
+                    <Label htmlFor="contactNumber" value="Contact Number" />
+                  </div>
+                  <TextInput
+                    id="contactNumber"
+                    type="text"
+                    placeholder="082832034"
+                    required
+                    value={contactNumber}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      if (event && event.target) {
+                        setContactNumber(event.target.value);
+                      }
+                    }}
+                  />
+                </div>
+
+              </form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button gradientDuoTone="greenToBlue" outline onClick={() => createCustomer()}>
+                {loading && (
+                  <Spinner aria-label="Spinner button example" size="sm" />
+                )}
+                <span className="pl-3">Save</span>
+              </Button>
+              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenCustomerModal(false)}>
+                Cancel
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+
           {/* Create new seed modal */}
           <Modal
             id="CreateModal"
