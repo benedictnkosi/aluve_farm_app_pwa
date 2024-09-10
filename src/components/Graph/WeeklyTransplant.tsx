@@ -21,7 +21,7 @@ interface Item {
   count: number;
 }
 
-export const WeeklySeedling: React.FC = () => {
+export const WeeklyTransplant: React.FC = () => {
   const [data, setData] = useState<Item[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Add loading state
 
