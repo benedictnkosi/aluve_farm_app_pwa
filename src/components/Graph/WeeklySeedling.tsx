@@ -16,7 +16,7 @@ import { Spinner } from "flowbite-react";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface Item {
-  week: number;
+  date: string;
   crop: string;
   count: number;
 }
@@ -50,16 +50,16 @@ export const WeeklySeedling: React.FC = () => {
     fetchData();
   }, []);
 
-  // Transform the data to group by week and crop
+  // Transform the data to group by date and crop
   const transformedData = data.reduce((acc, item) => {
-    const existingWeek = acc.find((week) => week.week === item.week);
-    if (existingWeek) {
-      existingWeek[item.crop] = item.count;
+    const existingDate = acc.find((date) => date.date === item.date);
+    if (existingDate) {
+      existingDate[item.crop] = item.count;
     } else {
-      acc.push({ week: item.week, [item.crop]: item.count });
+      acc.push({ date: item.date, [item.crop]: item.count });
     }
     return acc;
-  }, [] as Array<{ week: number; [key: string]: number }>);
+  }, [] as Array<{ date: string; [key: string]: number }>);
 
   // Extract unique crop names
   const cropNames = Array.from(new Set(data.map((item) => item.crop)));
@@ -91,10 +91,10 @@ export const WeeklySeedling: React.FC = () => {
             <div
               className={`${styles["card-container"]} ${styles["negative-margin-left"]}`}
             >
-              <ResponsiveContainer width="90%" height={400}>
+              <ResponsiveContainer width="100%" height={400}>
                 <LineChart width={500} height={300} data={transformedData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="week" />
+                  <XAxis dataKey="date" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
