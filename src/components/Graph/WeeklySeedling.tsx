@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import styles from "../Pages.module.scss";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -69,29 +70,40 @@ const WeeklySeedling = ({ width = "100%", height = 400 }: Props) => {
 
   return (
     <React.Fragment>
-    <ResponsiveContainer width={width} height={height}>
-      <LineChart
-        data={formattedData}
-        margin={{
-          top: 5, right: 30, left: 20, bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        {crops.map((crop, index) => (
-          <Line
-            key={crop}
-            type="monotone"
-            dataKey={crop}
-            stroke={colors[index % colors.length]}
-            activeDot={{ r: 8 }}
-          />
-        ))}
-      </LineChart>
-    </ResponsiveContainer>
+      <div className={"container mt-4"}>
+        <div className={styles["market-list"]}>
+          <div className={styles["section-header"]}>Weekly Seedlings</div>
+          <div
+            className={`${styles["card-container"]} ${styles["negative-margin-left"]}`}
+          ></div>
+          <ResponsiveContainer width={width} height={height}>
+            <LineChart
+              data={formattedData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              {crops.map((crop, index) => (
+                <Line
+                  key={crop}
+                  type="monotone"
+                  dataKey={crop}
+                  stroke={colors[index % colors.length]}
+                  activeDot={{ r: 8 }}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </React.Fragment>
   );
 };

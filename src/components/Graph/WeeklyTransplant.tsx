@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import styles from "../Pages.module.scss";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -28,7 +29,6 @@ const WeeklyTransplant = ({ width = "100%", height = 400 }: Props) => {
   const [data, setData] = useState<Item[]>([]);
 
   const fetchData = async () => {
-
     const farmUid = localStorage.getItem("farm_uid") ?? "";
     try {
       const response = await axios.get(
@@ -58,40 +58,58 @@ const WeeklyTransplant = ({ width = "100%", height = 400 }: Props) => {
   }, {} as { [key: string]: unknown });
 
   // Convert grouped data to an array
-    const formattedData = Object.values(groupedData);
+  const formattedData = Object.values(groupedData);
 
-    // Get unique crop names for dynamic Line creation
-    const crops = [...new Set(data.map(item => item.crop))];
-  
-    // Define colors for each crop dynamically (you can expand this array as needed)
-    const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#0088FE', '#00C49F', '#FFBB28'];
-  
+  // Get unique crop names for dynamic Line creation
+  const crops = [...new Set(data.map((item) => item.crop))];
+
+  // Define colors for each crop dynamically (you can expand this array as needed)
+  const colors = [
+    "#8884d8",
+    "#82ca9d",
+    "#ffc658",
+    "#ff7300",
+    "#0088FE",
+    "#00C49F",
+    "#FFBB28",
+  ];
 
   return (
     <React.Fragment>
-    <ResponsiveContainer width={width} height={height}>
-      <LineChart
-        data={formattedData}
-        margin={{
-          top: 5, right: 30, left: 20, bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        {crops.map((crop, index) => (
-          <Line
-            key={crop}
-            type="monotone"
-            dataKey={crop}
-            stroke={colors[index % colors.length]}
-            activeDot={{ r: 8 }}
-          />
-        ))}
-      </LineChart>
-    </ResponsiveContainer>
+      <div className={"container mt-4"}>
+        <div className={styles["market-list"]}>
+          <div className={styles["section-header"]}>Weekly Transplants</div>
+          <div
+            className={`${styles["card-container"]} ${styles["negative-margin-left"]}`}
+          ></div>
+          <ResponsiveContainer width={width} height={height}>
+            <LineChart
+              data={formattedData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              {crops.map((crop, index) => (
+                <Line
+                  key={crop}
+                  type="monotone"
+                  dataKey={crop}
+                  stroke={colors[index % colors.length]}
+                  activeDot={{ r: 8 }}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </React.Fragment>
   );
 };
