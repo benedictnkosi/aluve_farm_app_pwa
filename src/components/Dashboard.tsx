@@ -46,15 +46,16 @@ export const Dashboard = () => {
 
   return (
     <React.Fragment>
-      <div className="flex">
+      
       {isBelongsToFarm &&(<NavBar />)}
+      <div className="flex">
       {isBelongsToFarm &&(<SidebarNav />)}
         <div className="container mt-4">
           <div className={styles["market-list"]}>
             <div className={styles["container"]}>
               {isBelongsToFarm && <div>
                 <DailySales></DailySales>
-                    <div className="flex">
+                    <div className={styles["flex-desktop"]}>
                     <WeeklySeedling></WeeklySeedling>
                     <WeeklyTransplant></WeeklyTransplant>
                     </div>
