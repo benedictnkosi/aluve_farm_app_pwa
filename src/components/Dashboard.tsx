@@ -8,6 +8,8 @@ import { DailySales } from "./Graph/DailySales";
 import { useNavigate } from "react-router-dom";
 import { SidebarNav } from "./NavBar/SidebarNav";
 import React from "react";
+import { WeeklySeedling } from "./Graph/WeeklySeedling";
+import { WeeklyTransplant } from "./Graph/WeeklyTransplant";
 
 export const Dashboard = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,7 +52,13 @@ export const Dashboard = () => {
         <div className="container mt-4">
           <div className={styles["market-list"]}>
             <div className={styles["container"]}>
-              {isBelongsToFarm && <div><DailySales></DailySales></div>}
+              {isBelongsToFarm && <div>
+                <DailySales></DailySales>
+                    <div className="flex">
+                    <WeeklySeedling></WeeklySeedling>
+                    <WeeklyTransplant></WeeklyTransplant>
+                    </div>
+                </div>}
               {!isBelongsToFarm && (
                 <JoinCreateFarm setIsBelongsToFarm={setIsBelongsToFarm} />
               )}
