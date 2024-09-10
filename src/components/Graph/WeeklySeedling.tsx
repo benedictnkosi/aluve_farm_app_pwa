@@ -68,6 +68,7 @@ const WeeklySeedling = ({ width = "100%", height = 400 }: Props) => {
   
 
   return (
+    <React.Fragment>
     <ResponsiveContainer width={width} height={height}>
       <LineChart
         data={formattedData}
@@ -91,6 +92,7 @@ const WeeklySeedling = ({ width = "100%", height = 400 }: Props) => {
         ))}
       </LineChart>
     </ResponsiveContainer>
+    </React.Fragment>
   );
 };
 
