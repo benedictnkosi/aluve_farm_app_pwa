@@ -32,7 +32,7 @@ const WeeklyTransplant = ({ width = "100%", height = 400 }: Props) => {
     const farmUid = localStorage.getItem("farm_uid") ?? "";
     try {
       const response = await axios.get(
-        `${apiUrl}/public/dashboard/weeklyseedlings?farm_uid=${farmUid}`
+        `${apiUrl}/public/dashboard/weeklytransplant?farm_uid=${farmUid}`
       );
       if (response.data.status && response.data.status === "NOK") {
         console.error(response.data.message);
