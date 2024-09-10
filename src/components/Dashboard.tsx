@@ -8,8 +8,8 @@ import { DailySales } from "./Graph/DailySales";
 import { useNavigate } from "react-router-dom";
 import { SidebarNav } from "./NavBar/SidebarNav";
 import React from "react";
-import { WeeklySeedling } from "./Graph/WeeklySeedling";
-import { WeeklyTransplant } from "./Graph/WeeklyTransplant";
+import  WeeklySeedling  from "./Graph/WeeklySeedling";
+import WeeklyTransplant from "./Graph/WeeklyTransplant";
 
 export const Dashboard = () => {
   const [loading, setLoading] = useState<boolean>(false);
