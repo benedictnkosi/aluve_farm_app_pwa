@@ -23,6 +23,8 @@ interface Delivery {
   delivery_date: string;
   crop_name: string;
   agent: string;
+  packaging: string;
+  quantity: number;
   sales: Sales[];
 
   // other fields...
@@ -341,7 +343,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                       <Table.Cell colSpan={8} className="font-bold">
                         <div className="flex justify-between items-center">
                           <div>
-                            {delivery.agent + " - " + delivery.crop_name}
+                            {delivery.agent + " - " + delivery.crop_name + " (" + delivery.quantity + " x " +  delivery.packaging + ") - " + delivery.delivery_date}
                           </div>
                           <Button
                             color="light"
