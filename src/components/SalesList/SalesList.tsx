@@ -8,7 +8,7 @@ import {
   Toast,
   Radio,
 } from "flowbite-react";
-import { HiInformationCircle, HiCheck,HiOutlineCash } from "react-icons/hi"; // Import the HiInformationCircle icon from the react-icons/hi package
+import { HiInformationCircle, HiCheck,HiOutlineCash, HiExclamation, HiX, HiOutlineExclamationCircle } from "react-icons/hi"; // Import the HiInformationCircle icon from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
 import styles from "../Pages.module.scss";
@@ -45,6 +45,8 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
   const [saleId, setSaleId] = useState("");
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -101,6 +103,39 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
     }
   };
 
+  const resetValues = (): void => {
+    setIsError(false);
+    setShowToast(false);
+    setMessage("");
+  };
+
+  const deleteSale = async () => {
+    setOpenDeleteModal(false);
+    setLoading(true);
+    resetValues();
+
+    try {
+      const response = await axios.post(`${apiUrl}/public/item/delete`, {
+        entity: "Sales",
+        id: Number(saleId),
+        farm_uid: localStorage.getItem("farm_uid"),
+      });
+
+      setShowToast(true);
+      setMessage(response.data.message);
+      if (response.data.status === "OK") {
+        fetchSales();
+      } else {
+        setIsError(true);
+      }
+    } catch {
+      setIsError(true);
+      setMessage("Error removing sale");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAddPaymentClick = (id: string) => {
     setIsError(false);
     setSaleId(id);
@@ -111,6 +146,33 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
 
   return (
     <>
+
+    {/* delete modal */}
+    <Modal
+        show={openDeleteModal}
+        size="md"
+        onClose={() => setOpenDeleteModal(false)}
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this Sale and all payments linked?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={() => deleteSale()}>
+                {"Yes, I'm sure"}
+              </Button>
+              <Button color="gray" onClick={() => setOpenDeleteModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
       {/* add payment moday */}
       <Modal
         id="CreateModal"
@@ -194,12 +256,17 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
         </Modal.Footer>
       </Modal>
       {showToast && (
-        <Toast>
-          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-            <HiCheck className="h-5 w-5" />
-          </div>
+        <Toast >
+          {isError ? (
+            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200 ">
+              <HiExclamation className="h-5 w-5" />
+            </div>          ) : (
+            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+              <HiCheck className="h-5 w-5" />
+            </div>
+          )}
           <div className="ml-3 text-sm font-normal">{message}</div>
-          <Toast.Toggle />
+          <Toast.Toggle  onClick={() => setShowToast(false)} />
         </Toast>
       )}
 
@@ -219,6 +286,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
               <Table.HeadCell>Total</Table.HeadCell>
               <Table.HeadCell>Paid</Table.HeadCell>
               <Table.HeadCell>Payment</Table.HeadCell>
+              <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {sales.map((sale, index) => {
@@ -268,6 +336,19 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
                           </Button>
                         )}
                       </Table.Cell>
+                      <Table.Cell>
+                              <Button
+                                outline
+                                pill
+                                color="light"
+                                onClick={() => {
+                                  setSaleId(sale.sale_id);
+                                  setOpenDeleteModal(true);
+                                }}
+                              >
+                                <HiX className="h-4 w-4 text-orange-500" />
+                              </Button>
+                            </Table.Cell>
                     </Table.Row>
                   </Fragment>
                 );

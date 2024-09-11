@@ -10,7 +10,7 @@ import {
   Label
 } from "flowbite-react";
 import { auth } from "../../../firebaseConfig";
-import { HiCheck } from "react-icons/hi";
+import { HiCheck, HiExclamation } from "react-icons/hi";
 import axios from "axios";
 import React from "react";
 
@@ -189,14 +189,17 @@ const JoinCreateFarm: React.FC<Props> = ({ setIsBelongsToFarm }) => {
       </Modal>
 
       {showToast && (
-        <Toast>
-          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-            <HiCheck className="h-5 w-5" />
-          </div>
-          <div className="ml-3 text-sm font-normal">
-            Successfully joined farm.
-          </div>
-          <Toast.Toggle />
+        <Toast >
+          {isError ? (
+            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200 ">
+              <HiExclamation className="h-5 w-5" />
+            </div>          ) : (
+            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+              <HiCheck className="h-5 w-5" />
+            </div>
+          )}
+          <div className="ml-3 text-sm font-normal">{message}</div>
+          <Toast.Toggle  onClick={() => setShowToast(false)} />
         </Toast>
       )}
     </>

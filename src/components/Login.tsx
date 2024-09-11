@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { auth, provider } from "../../firebaseConfig";
 import { signInWithPopup } from "firebase/auth";
 import axios from "axios";
-import {  HiExclamation } from "react-icons/hi";
+import {  HiExclamation, HiCheck } from "react-icons/hi";
 import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -12,6 +12,8 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export const Login: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showToast, setShowToast] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [message, setMessage] = useState("");
 
   const navigate = useNavigate(); // Use the useNavigate hook
 
@@ -32,7 +34,10 @@ export const Login: React.FC = () => {
 
   const signIn = async () => {
     try {
+      setIsError(false);
       const result = await signInWithPopup(auth, provider);
+      
+
       console.log(result.user.email);
       console.log(result.user.displayName);
       console.log(result.user.uid);
@@ -48,6 +53,7 @@ export const Login: React.FC = () => {
           navigate("/dashboard");
         }else{
           setShowToast(true);
+          setMessage(response.data.message);
         }
       }else{
         if (userResponse.data.farm && userResponse.data.farm.uid) {
@@ -57,7 +63,10 @@ export const Login: React.FC = () => {
         navigate("/dashboard");
       }
     } catch(error) {
+      setIsError(true);
       console.error(error);
+      setMessage("Error logging in.");
+      setShowToast(true);
     }
   };
 
@@ -77,16 +86,19 @@ export const Login: React.FC = () => {
           Login With Google
         </Button>
         {showToast && (
-          <Toast className="mt-4">
-            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
+        <Toast >
+          {isError ? (
+            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200 ">
               <HiExclamation className="h-5 w-5" />
+            </div>          ) : (
+            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+              <HiCheck className="h-5 w-5" />
             </div>
-            <div className="ml-3 text-sm font-normal">
-              Failed to register user. Please refresh and try again.
-            </div>
-            <Toast.Toggle />
-          </Toast>
-        )}
+          )}
+          <div className="ml-3 text-sm font-normal">{message}</div>
+          <Toast.Toggle  onClick={() => setShowToast(false)} />
+        </Toast>
+      )}
       </div>
     </div>
       

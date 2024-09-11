@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Table } from "flowbite-react"; // Import the HiInformationCircle icon from the react-icons/hi package
+import { Button, Modal, Table, Toast } from "flowbite-react"; // Import the HiInformationCircle icon from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
 import { Timestamp } from "firebase/firestore";
 import { Spinner } from "flowbite-react";
@@ -7,6 +7,7 @@ import styles from "./Pages.module.scss";
 import axios from "axios";
 import { formatDate } from "./Functions/common";
 import React from "react";
+import { HiCheck, HiX, HiOutlineExclamationCircle, HiExclamation } from "react-icons/hi";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -44,6 +45,11 @@ interface SalesListProps {
 export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
   const [loading, setLoading] = useState<boolean>(true); // Add loading state
   const [transplants, setTransplants] = useState<Transplant[]>([]);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [message, setMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState<string>("");
 
   const fetchTransplants = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -70,6 +76,40 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
     fetchTransplants();
   }, [refresh]);
 
+
+  const resetValues = (): void => {
+    setIsError(false);
+    setShowToast(false);
+    setMessage("");
+  };
+
+  const deleteItem = async () => {
+    setOpenDeleteModal(false);
+    setLoading(true);
+    resetValues();
+
+    try {
+      const response = await axios.post(`${apiUrl}/public/item/delete`, {
+        entity: "Transplant",
+        id: Number(deleteItemId),
+        farm_uid: localStorage.getItem("farm_uid"),
+      });
+
+      setShowToast(true);
+      setMessage(response.data.message);
+      if (response.data.status === "OK") {
+        fetchTransplants();
+      } else {
+        setIsError(true);
+      }
+    } catch {
+      setIsError(true);
+      setMessage("Error removing sale");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const formatShortDate = (timestamp: Timestamp | string): string => {
     const date =
       typeof timestamp === "string" ? new Date(timestamp) : timestamp.toDate();
@@ -84,6 +124,49 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
 
   return (
     <React.Fragment>
+
+      {/* delete modal */}
+      <Modal
+        show={openDeleteModal}
+        size="md"
+        onClose={() => setOpenDeleteModal(false)}
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this transplant?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={() => deleteItem()}>
+                {"Yes, I'm sure"}
+              </Button>
+              <Button color="gray" onClick={() => setOpenDeleteModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      {showToast && (
+        <Toast>
+          {isError ? (
+            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200 ">
+              <HiExclamation className="h-5 w-5" />
+            </div>
+          ) : (
+            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+              <HiCheck className="h-5 w-5" />
+            </div>
+          )}
+          <div className="ml-3 text-sm font-normal">{message}</div>
+          <Toast.Toggle onClick={() => setShowToast(false)} />
+        </Toast>
+      )}
+      
       {loading ? (
         <div className="text-center">
           <Spinner aria-label="Extra large spinner example" size="xl" />
@@ -96,6 +179,7 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
               <Table.HeadCell>Seed</Table.HeadCell>
               <Table.HeadCell>Quantity</Table.HeadCell>
               <Table.HeadCell>Harvest</Table.HeadCell>
+              <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {transplants.map((transplant, index) => {
@@ -122,6 +206,19 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
                       <Table.Cell>{transplant.quantity}</Table.Cell>
                       <Table.Cell>
                         {formatShortDate(transplant.harvest_date)}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Button
+                          outline
+                          pill
+                          color="light"
+                          onClick={() => {
+                            setDeleteItemId(transplant.id);
+                            setOpenDeleteModal(true);
+                          }}
+                        >
+                          <HiX className="h-4 w-4 text-orange-500" />
+                        </Button>
                       </Table.Cell>
                     </Table.Row>
                   </Fragment>
