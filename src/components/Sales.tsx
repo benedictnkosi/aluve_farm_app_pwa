@@ -42,13 +42,13 @@ export const Sales = () => {
   const [selectedId, setSelectedId] = useState("");
   const [selectedCropId, setSelectedCropId] = useState("");
   const [message, setMessage] = useState("");
-  const [refresh, setRefresh] = useState<boolean>(false); // Add state for refresh
+  const [refresh, setRefresh] = useState<boolean>(false);
   const [isError, setIsError] = useState(false);
   const [packages, setPackages] = useState<Item[]>([]);
   const [selectedPackage, setSelectedPackage] = useState("Select Package");
   const [selectedPackageId, setSelectedPackageId] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<string>("");
-  const [isPaid, setIsPaid] = useState<boolean>(false); // Add state for refresh
+  const [paymentMethod, setPaymentMethod] = useState<string>("Cash");
+  const [isPaid, setIsPaid] = useState<boolean>(true);
   
   const getCropNames = async () => {
     try {
