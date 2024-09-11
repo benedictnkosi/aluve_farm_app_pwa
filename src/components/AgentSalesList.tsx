@@ -511,7 +511,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                           <Button
                             outline
                             pill
-                            gradientDuoTone="greenToBlue"
+                            gradientDuoTone="pinkToOrange"
                             onClick={() => {
                               setDeliveryId(delivery.id);
                               setOpenDeleteDeliveryModal(true);
