@@ -326,7 +326,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
                         ) : (
                           <Button
                             outline
-                            color="light"
+                            gradientMonochrome="failure"
                             onClick={() => {
                               setAmount((sale.quantity * sale.price).toString());
                               handleAddPaymentClick(sale.sale_id);
