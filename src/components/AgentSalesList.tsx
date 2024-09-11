@@ -50,13 +50,14 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [date, setDate] = useState(new Date());
   const [isError, setIsError] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>("");
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState<Number>(0);
   const [paymentMethod, setPaymentMethod] = useState<string>("Cash");
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
   const [saleId, setSaleId] = useState("");
   const [deliveryId, setDeliveryId] = useState("");
   const [crop, setCrop] = useState("");
+  const [deliveryQuantity, setDeliveryQuantity] = useState<Number>(0);
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -88,6 +89,12 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
     setLoading(true);
 
     try {
+      if(quantity > deliveryQuantity) {
+        setIsError(true);
+        setMessage("Quantity sold cannot be more than quantity delivered.");
+        return;
+      }
+
       const response = await axios.post(`${apiUrl}/public/agentsales/record`, {
         delivery_id: deliveryId,
         date: date,
@@ -251,10 +258,10 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                 type="number"
                 placeholder="How many units?"
                 required
-                value={quantity}
+                value={quantity.toString()}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   if (event && event.target) {
-                    setQuantity(event.target.value);
+                    setQuantity(Number(event.target.value));
                   }
                 }}
               />
@@ -353,6 +360,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                               setOpenSaleModal(true);
                               setDeliveryId(delivery.id);
                               setCrop(delivery.crop_name);
+                              setDeliveryQuantity(delivery.quantity);
                             }}
                           >
                             <span>Add Sale</span>
