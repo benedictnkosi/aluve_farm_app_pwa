@@ -18,13 +18,15 @@ import {
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface Item {
-  date: Date;
+  date: string;
   totalSales: number;
   // other fields...
 }
 
 export const DailySales: React.FC = () => {
   const [data, setData] = useState<Item[]>([]);
+  const [agentData, setAgentData] = useState<Item[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true); // Add loading state
 
   const fetchData = async () => {
@@ -34,6 +36,28 @@ export const DailySales: React.FC = () => {
     try {
       const response = await axios.get(
         `${apiUrl}/public/dashboard/dailysales?farm_uid=${farmUid}`
+      );
+      if (response.data.status && response.data.status === "NOK") {
+        console.error(response.data.message);
+        setData([]);
+      } else {
+        setAgentData(response.data); // Pass response.data instead of salesData.data
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching data
+    }
+  };
+
+
+  const fetchAgentData = async () => {
+    setLoading(true); // Set loading to true before fetching data
+
+    const farmUid = localStorage.getItem("farm_uid") ?? "";
+    try {
+      const response = await axios.get(
+        `${apiUrl}/public/dashboard/agentdailysales?farm_uid=${farmUid}`
       );
       if (response.data.status && response.data.status === "NOK") {
         console.error(response.data.message);
@@ -50,6 +74,7 @@ export const DailySales: React.FC = () => {
 
   useEffect(() => {
     fetchData();
+    fetchAgentData();
   }, []);
 
   const formatData = (data: Item[]) => {
@@ -63,7 +88,28 @@ export const DailySales: React.FC = () => {
     }));
   };
 
-  const formattedData = formatData(data);
+  // Merge data and agentData
+  const mergedDataMap = new Map<string, Item>();
+
+  const addToMap = (item: Item) => {
+    console.log(item);
+    const dateStr = item.date; // Use the formatted date string directly
+    if (mergedDataMap.has(dateStr)) {
+      const existingItem = mergedDataMap.get(dateStr)!;
+      existingItem.totalSales += item.totalSales;
+    } else {
+      mergedDataMap.set(dateStr, { ...item });
+    }
+  };
+
+  data.forEach(addToMap);
+  agentData.forEach(addToMap);
+
+  const mergedData = Array.from(mergedDataMap.values());
+
+  const sortedData = mergedData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const formattedData = formatData(sortedData);
+
   return (
     <>
       {loading ? (
