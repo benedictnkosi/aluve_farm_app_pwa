@@ -606,7 +606,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                                 ) : (
                                   <Button
                                     outline
-                                    gradientMonochrome="failure"
+                                    gradientDuoTone="cyanToBlue"
                                     onClick={() => {
                                       setOpenModal(true);
                                       setSaleId(sale.id);
