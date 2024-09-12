@@ -82,7 +82,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [selectedId, setSelectedId] = useState(0);
   const [totalSalesAmount, setTotalSalesAmount] = useState<Number>(0);
   const [totalAmountPaid, setTotalAmountPaid] = useState<Number>(0);
-
+  const [percentOwed, setPercentOwed] = useState<Number>(0);
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -149,6 +149,12 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
 
         setTotalSalesAmount(totalSalesAmountForAllDeliveries.toFixed(2));
         setTotalAmountPaid(totalPaidAmountForAllDeliveries.toFixed(2));
+        const percentOwed =
+          ((Number(totalSalesAmountForAllDeliveries) -
+            Number(totalAmountPaid)) /
+            Number(totalSalesAmountForAllDeliveries)) *
+          100;
+        setPercentOwed(percentOwed);
       }
     } catch {
       setShowToast(true);
@@ -555,27 +561,38 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         </div>
       ) : (
         <>
-          <div className="flex">
+          <div className="flex items-center">
             <div className="mr-5">
-            <Dropdown label={selectedCustomer} color="light" >
-              {customers.map((customer, index) => (
-                <Dropdown.Item
-                  onClick={() => {
-                    setSelectedCustomer(customer.name);
-                    setSelectedId(Number(customer.id));
-                  }}
-                  key={index}
-                >
-                  {customer.name}
-                </Dropdown.Item>
-              ))}
-            </Dropdown>
+              <SalesStatCard
+                amount={totalSalesAmount.toString()}
+                description={"Total Sales"}
+              />
             </div>
-            <div className="flex items-center">
-            <div className="mr-5"><SalesStatCard amount={totalSalesAmount.toString()} description={"Total Sales"}/></div>
-            <SalesStatCard amount={totalAmountPaid.toString()} description={"Total Paid"}/>
+            <div className="mr-5">
+              <SalesStatCard
+                amount={totalAmountPaid.toString()}
+                description={"Total Paid"}
+              />
             </div>
+            <SalesStatCard
+              amount={percentOwed.toFixed(2).toString() + "%"}
+              description={"Unpaid"}
+            />
           </div>
+          <Dropdown label={selectedCustomer} color="light">
+            {customers.map((customer, index) => (
+              <Dropdown.Item
+                onClick={() => {
+                  setSelectedCustomer(customer.name);
+                  setSelectedId(Number(customer.id));
+                }}
+                key={index}
+              >
+                {customer.name}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+
           <div className={styles["table-width-responsive"]}>
             <Table striped className="mt-5">
               <Table.Head className={styles["sticky-header"]}>
