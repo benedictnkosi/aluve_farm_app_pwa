@@ -69,7 +69,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [isError, setIsError] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>("");
   const [quantity, setQuantity] = useState<Number>(0);
-  const [paymentMethod, setPaymentMethod] = useState<string>("Cash");
+  const [paymentMethod, setPaymentMethod] = useState<string>("EFT");
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
   const [saleId, setSaleId] = useState("");
