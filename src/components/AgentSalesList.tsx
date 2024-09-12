@@ -82,7 +82,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [selectedId, setSelectedId] = useState(0);
   const [totalSalesAmount, setTotalSalesAmount] = useState<Number>(0);
   const [totalAmountPaid, setTotalAmountPaid] = useState<Number>(0);
-  const [percentOwed, setPercentOwed] = useState<Number>(0);
+  const [percentOwed, setPercentOwed] = useState<number>(0);
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -573,7 +573,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
               />
             </div>
             <SalesStatCard
-              amount={percentOwed.toFixed(2).toString() + "%"}
+              amount={isNaN(percentOwed) ? "0%" : percentOwed.toFixed(2).toString() + "%"}
               description={"Paid"}
             />
           </div>
