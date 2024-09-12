@@ -8,6 +8,7 @@ import {
   Radio,
   Datepicker,
   Table,
+  Dropdown,
 } from "flowbite-react";
 import {
   HiInformationCircle,
@@ -49,6 +50,12 @@ interface SalesListProps {
   refresh: boolean; // Add refresh prop
 }
 
+interface Item {
+  id: string;
+  name: string;
+  [key: string]: unknown;
+}
+
 export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Add loading state
@@ -69,15 +76,26 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [deliveryId, setDeliveryId] = useState("");
   const [crop, setCrop] = useState("");
   const [deliveryQuantity, setDeliveryQuantity] = useState<Number>(0);
+  const [selectedCustomer, setSelectedCustomer] = useState("Select Agent");
+  const [customers, setCustomers] = useState<Item[]>([]);
+  const [selectedId, setSelectedId] = useState(0);
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
     resetValues();
     try {
       const farmUid = localStorage.getItem("farm_uid") ?? "";
-      const response = await axios.get(
-        `${apiUrl}/public/agentsales/get?farm_uid=${farmUid}`
-      );
+      let response;
+      if (selectedId > 0) {
+        response = await axios.get(
+          `${apiUrl}/public/agentsales/get?farm_uid=${farmUid}&agent_id=${selectedId}`
+        );
+      } else {
+        response = await axios.get(
+          `${apiUrl}/public/agentsales/get?farm_uid=${farmUid}`
+        );
+      }
+
       if (response.data.status && response.data.status === "NOK") {
         console.error(response.data.message);
         setDeliveries([]);
@@ -92,9 +110,31 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
     }
   };
 
+  const getCustomerNames = async () => {
+    try {
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
+      const response = await axios.get(
+        `${apiUrl}/public/customers/get?farm_uid=${farmUid}&type=agent`
+      );
+      if (response.data.status === "NOK") {
+        setMessage(response.data.message);
+        setShowToast(true);
+      } else {
+        setCustomers(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching customer names:", error);
+      return [];
+    }
+  };
+
   useEffect(() => {
     fetchSales();
-  }, [refresh]);
+  }, [refresh, selectedId]);
+
+  useEffect(() => {
+    getCustomerNames();
+  }, []);
 
   const recordSale = async () => {
     resetValues();
@@ -466,123 +506,139 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
           <Spinner aria-label="Extra large spinner example" size="xl" />
         </div>
       ) : (
-        <div className={styles["table-width-responsive"]}>
-          <Table striped className="mt-5">
-            <Table.Head className={styles["sticky-header"]}>
-              <Table.HeadCell>Date</Table.HeadCell>
-              <Table.HeadCell>Quantity</Table.HeadCell>
-              <Table.HeadCell>Price</Table.HeadCell>
-              <Table.HeadCell>Total</Table.HeadCell>
-              <Table.HeadCell>Paid</Table.HeadCell>
-              <Table.HeadCell>Payment</Table.HeadCell>
-              <Table.HeadCell>Delete</Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {deliveries.map((delivery, index) => {
-                return (
-                  <Fragment key={index}>
-                    <Table.Row className="bg-gray-200 dark:bg-gray-700">
-                      <Table.Cell colSpan={8} className="font-bold">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            {delivery.agent +
-                              " - " +
-                              delivery.crop_name +
-                              " (" +
-                              delivery.quantity +
-                              " x " +
-                              delivery.packaging +
-                              ") - " +
-                              delivery.delivery_date}
+        <>
+          <Dropdown label={selectedCustomer} color="light">
+            {customers.map((customer, index) => (
+              <Dropdown.Item
+                onClick={() => {
+                  setSelectedCustomer(customer.name);
+                  setSelectedId(customer.id);
+                }}
+                key={index}
+              >
+                {customer.name}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+          <div className={styles["table-width-responsive"]}>
+            <Table striped className="mt-5">
+              <Table.Head className={styles["sticky-header"]}>
+                <Table.HeadCell>Date</Table.HeadCell>
+                <Table.HeadCell>Quantity</Table.HeadCell>
+                <Table.HeadCell>Price</Table.HeadCell>
+                <Table.HeadCell>Total</Table.HeadCell>
+                <Table.HeadCell>Paid</Table.HeadCell>
+                <Table.HeadCell>Payment</Table.HeadCell>
+                <Table.HeadCell>Delete</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {deliveries.map((delivery, index) => {
+                  return (
+                    <Fragment key={index}>
+                      <Table.Row className="bg-gray-200 dark:bg-gray-700">
+                        <Table.Cell colSpan={8} className="font-bold">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              {delivery.agent +
+                                " - " +
+                                delivery.crop_name +
+                                " (" +
+                                delivery.quantity +
+                                " x " +
+                                delivery.packaging +
+                                ") - " +
+                                delivery.delivery_date}
+                            </div>
+                            <Button
+                              color="light"
+                              outline
+                              size="xs"
+                              onClick={() => {
+                                setOpenSaleModal(true);
+                                setDeliveryId(delivery.id);
+                                setCrop(delivery.crop_name);
+                                setDeliveryQuantity(delivery.quantity);
+                              }}
+                            >
+                              <span>Add Sale</span>
+                            </Button>
+                            <Button
+                              outline
+                              pill
+                              gradientDuoTone="pinkToOrange"
+                              onClick={() => {
+                                setDeliveryId(delivery.id);
+                                setOpenDeleteDeliveryModal(true);
+                              }}
+                            >
+                              <HiX className="h-4 w-4 text-red-500" />
+                            </Button>
                           </div>
-                          <Button
-                            color="light"
-                            outline
-                            size="xs"
-                            onClick={() => {
-                              setOpenSaleModal(true);
-                              setDeliveryId(delivery.id);
-                              setCrop(delivery.crop_name);
-                              setDeliveryQuantity(delivery.quantity);
-                            }}
-                          >
-                            <span>Add Sale</span>
-                          </Button>
-                          <Button
-                            outline
-                            pill
-                            gradientDuoTone="pinkToOrange"
-                            onClick={() => {
-                              setDeliveryId(delivery.id);
-                              setOpenDeleteDeliveryModal(true);
-                            }}
-                          >
-                            <HiX className="h-4 w-4 text-red-500" />
-                          </Button>
-                        </div>
-                      </Table.Cell>
-                    </Table.Row>
+                        </Table.Cell>
+                      </Table.Row>
 
-                    {delivery.sales.map(
-                      (sale, index) =>
-                        sale.quantity !== 0 && (
-                          <Table.Row
-                            key={index}
-                            className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                          >
-                            <Table.Cell>{sale.sale_date}</Table.Cell>
-                            <Table.Cell>{sale.quantity}</Table.Cell>
-                            <Table.Cell>{sale.price}</Table.Cell>
-                            <Table.Cell>
-                              R{(sale.quantity * sale.price).toFixed(2)}
-                            </Table.Cell>
-                            <Table.Cell>
-                              R{sale.total_paid.toFixed(2)}
-                            </Table.Cell>
-                            <Table.Cell>
-                              {sale.total_paid >= sale.quantity * sale.price ? (
-                                <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-                                  <HiCheck className="h-5 w-5" />
-                                </div>
-                              ) : (
+                      {delivery.sales.map(
+                        (sale, index) =>
+                          sale.quantity !== 0 && (
+                            <Table.Row
+                              key={index}
+                              className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                            >
+                              <Table.Cell>{sale.sale_date}</Table.Cell>
+                              <Table.Cell>{sale.quantity}</Table.Cell>
+                              <Table.Cell>{sale.price}</Table.Cell>
+                              <Table.Cell>
+                                R{(sale.quantity * sale.price).toFixed(2)}
+                              </Table.Cell>
+                              <Table.Cell>
+                                R{sale.total_paid.toFixed(2)}
+                              </Table.Cell>
+                              <Table.Cell>
+                                {sale.total_paid >=
+                                sale.quantity * sale.price ? (
+                                  <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                                    <HiCheck className="h-5 w-5" />
+                                  </div>
+                                ) : (
+                                  <Button
+                                    outline
+                                    pill
+                                    color="light"
+                                    onClick={() => {
+                                      setOpenModal(true);
+                                      setSaleId(sale.id);
+                                      setAmount(
+                                        (sale.quantity * sale.price).toString()
+                                      );
+                                    }}
+                                  >
+                                    <HiOutlineCash className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </Table.Cell>
+                              <Table.Cell>
                                 <Button
                                   outline
                                   pill
                                   color="light"
                                   onClick={() => {
-                                    setOpenModal(true);
                                     setSaleId(sale.id);
-                                    setAmount(
-                                      (sale.quantity * sale.price).toString()
-                                    );
+                                    setOpenDeleteModal(true);
                                   }}
                                 >
-                                  <HiOutlineCash className="h-4 w-4" />
+                                  <HiX className="h-4 w-4 text-orange-500" />
                                 </Button>
-                              )}
-                            </Table.Cell>
-                            <Table.Cell>
-                              <Button
-                                outline
-                                pill
-                                color="light"
-                                onClick={() => {
-                                  setSaleId(sale.id);
-                                  setOpenDeleteModal(true);
-                                }}
-                              >
-                                <HiX className="h-4 w-4 text-orange-500" />
-                              </Button>
-                            </Table.Cell>
-                          </Table.Row>
-                        )
-                    )}
-                  </Fragment>
-                );
-              })}
-            </Table.Body>
-          </Table>
-        </div>
+                              </Table.Cell>
+                            </Table.Row>
+                          )
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </Table.Body>
+            </Table>
+          </div>
+        </>
       )}
     </>
   );
