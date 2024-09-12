@@ -569,7 +569,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                         <Table.Cell className="font-bold">
                           <Button
                             outline
-                            pill
+                            
                             gradientDuoTone="pinkToOrange"
                             onClick={() => {
                               setDeliveryId(delivery.id);
@@ -606,8 +606,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                                 ) : (
                                   <Button
                                     outline
-                                    pill
-                                    color="light"
+                                    gradientMonochrome="failure"
                                     onClick={() => {
                                       setOpenModal(true);
                                       setSaleId(sale.id);
@@ -623,7 +622,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                               <Table.Cell>
                                 <Button
                                   outline
-                                  pill
+                                  
                                   color="light"
                                   onClick={() => {
                                     setSaleId(sale.id);

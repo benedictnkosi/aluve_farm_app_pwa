@@ -384,7 +384,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
                       <Table.Cell>
                               <Button
                                 outline
-                                pill
+                                
                                 color="light"
                                 onClick={() => {
                                   setSaleId(sale.sale_id);
