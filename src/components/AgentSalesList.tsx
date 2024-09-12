@@ -536,7 +536,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                   return (
                     <Fragment key={index}>
                       <Table.Row className="bg-gray-200 dark:bg-gray-700">
-                        <Table.Cell colSpan={8} className="font-bold">
+                        <Table.Cell colSpan={5} className="font-bold">
                           <div className="flex justify-between items-center">
                             <div>
                               {delivery.agent +
@@ -549,31 +549,35 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                                 ") - " +
                                 delivery.delivery_date}
                             </div>
-                            <Button
-                              color="light"
-                              outline
-                              size="xs"
-                              onClick={() => {
-                                setOpenSaleModal(true);
-                                setDeliveryId(delivery.id);
-                                setCrop(delivery.crop_name);
-                                setDeliveryQuantity(delivery.quantity);
-                              }}
-                            >
-                              <span>Add Sale</span>
-                            </Button>
-                            <Button
-                              outline
-                              pill
-                              gradientDuoTone="pinkToOrange"
-                              onClick={() => {
-                                setDeliveryId(delivery.id);
-                                setOpenDeleteDeliveryModal(true);
-                              }}
-                            >
-                              <HiX className="h-4 w-4 text-red-500" />
-                            </Button>
                           </div>
+                        </Table.Cell>
+                        <Table.Cell className="font-bold">
+                          <Button
+                            color="light"
+                            outline
+                            size="xs"
+                            onClick={() => {
+                              setOpenSaleModal(true);
+                              setDeliveryId(delivery.id);
+                              setCrop(delivery.crop_name);
+                              setDeliveryQuantity(delivery.quantity);
+                            }}
+                          >
+                            <span>Add Sale</span>
+                          </Button>
+                        </Table.Cell>
+                        <Table.Cell className="font-bold">
+                          <Button
+                            outline
+                            pill
+                            gradientDuoTone="pinkToOrange"
+                            onClick={() => {
+                              setDeliveryId(delivery.id);
+                              setOpenDeleteDeliveryModal(true);
+                            }}
+                          >
+                            <HiX className="h-4 w-4 text-red-500" />
+                          </Button>
                         </Table.Cell>
                       </Table.Row>
 
