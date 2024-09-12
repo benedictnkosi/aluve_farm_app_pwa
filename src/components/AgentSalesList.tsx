@@ -150,9 +150,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         setTotalSalesAmount(totalSalesAmountForAllDeliveries.toFixed(2));
         setTotalAmountPaid(totalPaidAmountForAllDeliveries.toFixed(2));
         const percentOwed =
-          ((Number(totalSalesAmountForAllDeliveries) -
-            Number(totalAmountPaid)) /
-            Number(totalSalesAmountForAllDeliveries)) *
+          (Number(totalAmountPaid) / Number(totalSalesAmountForAllDeliveries)) *
           100;
         setPercentOwed(percentOwed);
       }
@@ -576,7 +574,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
             </div>
             <SalesStatCard
               amount={percentOwed.toFixed(2).toString() + "%"}
-              description={"Unpaid"}
+              description={"Paid"}
             />
           </div>
           <Dropdown label={selectedCustomer} color="light">
