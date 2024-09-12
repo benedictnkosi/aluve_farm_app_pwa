@@ -512,7 +512,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
               <Dropdown.Item
                 onClick={() => {
                   setSelectedCustomer(customer.name);
-                  setSelectedId(customer.id);
+                  setSelectedId(Number(customer.id));
                 }}
                 key={index}
               >
