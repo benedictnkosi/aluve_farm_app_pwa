@@ -23,6 +23,7 @@ import { Spinner } from "flowbite-react";
 import styles from "./Pages.module.scss";
 import axios from "axios";
 import React from "react";
+import SalesStatCard from "./SalesStatCard";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -79,6 +80,9 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [selectedCustomer, setSelectedCustomer] = useState("Select Agent");
   const [customers, setCustomers] = useState<Item[]>([]);
   const [selectedId, setSelectedId] = useState(0);
+  const [totalSalesAmount, setTotalSalesAmount] = useState<Number>(0);
+  const [totalAmountPaid, setTotalAmountPaid] = useState<Number>(0);
+
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -100,7 +104,51 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         console.error(response.data.message);
         setDeliveries([]);
       } else {
-        setDeliveries(response.data); // Pass response.data instead of salesData.data
+        setDeliveries(response.data);
+        const calculateTotalSalesAmount = (delivery: Delivery): number => {
+          let totalAmount = 0;
+          delivery.sales.forEach((sale) => {
+            totalAmount += sale.quantity * Number(sale.price);
+          });
+          return totalAmount;
+        };
+
+        //calculate total amount paid
+        const calculateTotalPaidAmount = (delivery: Delivery): number => {
+          let totalAmount = 0;
+          delivery.sales.forEach((sale) => {
+            totalAmount += sale.total_paid;
+          });
+          return totalAmount;
+        };
+
+        // Calculate total sales amount for all deliveries
+        const totalSalesAmountForAllDeliveries = response.data.reduce(
+          (acc: number, delivery: Delivery) =>
+            acc + calculateTotalSalesAmount(delivery),
+          0
+        );
+
+        const totalPaidAmountForAllDeliveries = response.data.reduce(
+          (acc: number, delivery: Delivery) =>
+            acc + calculateTotalPaidAmount(delivery),
+          0
+        );
+
+        setDeliveries(
+          response.data.map((delivery: Delivery) => ({
+            ...delivery,
+            totalSalesAmount: calculateTotalSalesAmount(delivery),
+          }))
+        );
+
+        console.log(
+          "Total Sales Amount for All Deliveries:",
+          totalSalesAmountForAllDeliveries
+        );
+
+        setTotalSalesAmount(totalSalesAmountForAllDeliveries.toFixed(2));
+        setTotalAmountPaid(totalPaidAmountForAllDeliveries.toFixed(2));
       }
     } catch {
       setShowToast(true);
@@ -507,19 +555,27 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         </div>
       ) : (
         <>
-          <Dropdown label={selectedCustomer} color="light">
-            {customers.map((customer, index) => (
-              <Dropdown.Item
-                onClick={() => {
-                  setSelectedCustomer(customer.name);
-                  setSelectedId(Number(customer.id));
-                }}
-                key={index}
-              >
-                {customer.name}
-              </Dropdown.Item>
-            ))}
-          </Dropdown>
+          <div className="flex">
+            <div className="mr-5">
+            <Dropdown label={selectedCustomer} color="light" >
+              {customers.map((customer, index) => (
+                <Dropdown.Item
+                  onClick={() => {
+                    setSelectedCustomer(customer.name);
+                    setSelectedId(Number(customer.id));
+                  }}
+                  key={index}
+                >
+                  {customer.name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown>
+            </div>
+            <div className="flex items-center">
+            <div className="mr-5"><SalesStatCard amount={totalSalesAmount.toString()} description={"Total Sales"}/></div>
+            <SalesStatCard amount={totalAmountPaid.toString()} description={"Total Paid"}/>
+            </div>
+          </div>
           <div className={styles["table-width-responsive"]}>
             <Table striped className="mt-5">
               <Table.Head className={styles["sticky-header"]}>
@@ -569,7 +625,6 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                         <Table.Cell className="font-bold">
                           <Button
                             outline
-                            
                             gradientDuoTone="pinkToOrange"
                             onClick={() => {
                               setDeliveryId(delivery.id);
@@ -622,7 +677,6 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                               <Table.Cell>
                                 <Button
                                   outline
-                                  
                                   color="light"
                                   onClick={() => {
                                     setSaleId(sale.id);
