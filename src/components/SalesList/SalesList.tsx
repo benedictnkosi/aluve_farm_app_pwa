@@ -7,6 +7,7 @@ import {
   TextInput,
   Toast,
   Radio,
+  Dropdown
 } from "flowbite-react";
 import { HiInformationCircle, HiCheck,HiOutlineCash, HiExclamation, HiX, HiOutlineExclamationCircle } from "react-icons/hi"; // Import the HiInformationCircle icon from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
@@ -35,6 +36,12 @@ interface SalesListProps {
   refresh: boolean; // Add refresh prop
 }
 
+interface Item {
+  id: string;
+  name: string;
+  [key: string]: unknown;
+}
+
 export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [sales, setSales] = useState<SaleWithDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Add loading state
@@ -46,7 +53,9 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [message, setMessage] = useState("");
   const [saleId, setSaleId] = useState("");
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-
+  const [selectedCustomer, setSelectedCustomer] = useState("Select Customer");
+  const [customers, setCustomers] = useState<Item[]>([]);
+  const [selectedId, setSelectedId] = useState(0);
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -70,9 +79,31 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
     }
   };
 
+  const getCustomerNames = async () => {
+    try {
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
+      const response = await axios.get(
+        `${apiUrl}/public/customers/get?farm_uid=${farmUid}&type=customer`
+      );
+      if (response.data.status === "NOK") {
+        setMessage(response.data.message);
+        setShowToast(true);
+      } else {
+        setCustomers(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching customer names:", error);
+      return [];
+    }
+  };
+
   useEffect(() => {
     fetchSales();
-  }, [refresh]);
+  }, [refresh, selectedId]);
+
+  useEffect(() => {
+    getCustomerNames();
+  }, []);
 
   const addPayment = async () => {
     setLoading(true);
@@ -275,6 +306,20 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
           <Spinner aria-label="Extra large spinner example" size="xl" />
         </div>
       ) : (
+        <>
+          <Dropdown label={selectedCustomer} color="light">
+            {customers.map((customer, index) => (
+              <Dropdown.Item
+                onClick={() => {
+                  setSelectedCustomer(customer.name);
+                  setSelectedId(Number(customer.id));
+                }}
+                key={index}
+              >
+                {customer.name}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
         <div className={styles["table-width-responsive"]}>
           <Table striped className="mt-5">
             <Table.Head className={styles["sticky-header"]}>
@@ -356,6 +401,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
             </Table.Body>
           </Table>
         </div>
+        </>
       )}
     </>
   );
