@@ -1,10 +1,15 @@
-import { Button, Modal, Table, Toast } from "flowbite-react"; // Import the HiInformationCircle icon from the react-icons/hi package
+import { Button, Dropdown, Modal, Table, Toast } from "flowbite-react"; // Import the HiInformationCircle icon from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
 import styles from "./Pages.module.scss";
 import axios from "axios";
 import { formatDate, formatShortDate } from "./Functions/common";
-import { HiCheck, HiX, HiOutlineExclamationCircle, HiExclamation } from "react-icons/hi";
+import {
+  HiCheck,
+  HiX,
+  HiOutlineExclamationCircle,
+  HiExclamation,
+} from "react-icons/hi";
 import React from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -44,14 +49,26 @@ export const SeedlingsList: React.FC<SalesListProps> = ({ refresh }) => {
   const [message, setMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [seedlingId, setSeedlingId] = useState<string>("");
+  const [selectedCrop, setSelectedCrop] = useState("Select Crop");
+  const [crops, setCrops] = useState<Crop[]>([]);
+  const [selectedId, setSelectedId] = useState(0);
+
   const fetchSeedlings = async () => {
     setLoading(true); // Set loading to true before fetching data
 
     try {
       const farmUid = localStorage.getItem("farm_uid") ?? "";
-      const response = await axios.get(
-        `${apiUrl}/public/seedlings/get?farm_uid=${farmUid}`
-      );
+      let response;
+      if (selectedId) {
+        response = await axios.get(
+          `${apiUrl}/public/seedlings/get?farm_uid=${farmUid}&crop_id=${selectedId}`
+        );
+      } else {
+        response = await axios.get(
+          `${apiUrl}/public/seedlings/get?farm_uid=${farmUid}`
+        );
+      }
+
       if (response.data.status && response.data.status === "NOK") {
         console.error(response.data.message);
         setSeedlings([]);
@@ -65,8 +82,35 @@ export const SeedlingsList: React.FC<SalesListProps> = ({ refresh }) => {
     }
   };
 
+  const getCrops = async () => {
+    try {
+      setLoading(true);
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
+      const crops = await axios.get(
+        `${apiUrl}/public/crops/get?farm_uid=${farmUid}`
+      );
+      if (crops.data.status && crops.data.status === "NOK") {
+        setMessage(crops.data.message);
+        setCrops([]);
+      } else {
+        setCrops(crops.data);
+      }
+    } catch (error) {
+      console.error("Error fetching crops names:", error);
+      setMessage("Error fetching crops names.");
+      setShowToast(true);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchSeedlings();
+  }, [refresh, selectedId]);
+
+  useEffect(() => {
+    getCrops();
   }, [refresh]);
 
   const resetValues = (): void => {
@@ -118,7 +162,8 @@ export const SeedlingsList: React.FC<SalesListProps> = ({ refresh }) => {
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete this seedling and all transplants linked?
+              Are you sure you want to delete this seedling and all transplants
+              linked?
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="failure" onClick={() => deleteItem()}>
@@ -147,72 +192,87 @@ export const SeedlingsList: React.FC<SalesListProps> = ({ refresh }) => {
           <Toast.Toggle onClick={() => setShowToast(false)} />
         </Toast>
       )}
-      
+
       {loading ? (
         <div className="text-center">
           <Spinner aria-label="Extra large spinner example" size="xl" />
         </div>
       ) : (
-        <div className={styles["table-width-responsive"]}>
-          <Table striped className="mt-5">
-            <Table.Head className={styles["sticky-header"]}>
-              <Table.HeadCell>Crop</Table.HeadCell>
-              <Table.HeadCell>Seed</Table.HeadCell>
-              <Table.HeadCell>Quantity</Table.HeadCell>
-              <Table.HeadCell>Transplant</Table.HeadCell>
-              <Table.HeadCell>Transplanted</Table.HeadCell>
-              <Table.HeadCell>Delete</Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {seedlings.map((seedling, index) => {
-                const currentDate = formatDate(seedling.seedling_date);
-                const showDateRow = previousDate !== currentDate;
-                previousDate = currentDate;
-                return (
-                  <Fragment key={index}>
-                    {showDateRow && (
-                      <Table.Row className="bg-gray-200 dark:bg-gray-700">
-                        <Table.Cell colSpan={8} className="font-bold">
-                          {currentDate}
+        <>
+          <Dropdown label={selectedCrop} color="light">
+            {crops.map((crop, index) => (
+              <Dropdown.Item
+                onClick={() => {
+                  setSelectedCrop(crop.name);
+                  setSelectedId(Number(crop.id));
+                }}
+                key={index}
+              >
+                {crop.name}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+          <div className={styles["table-width-responsive"]}>
+            <Table striped className="mt-5">
+              <Table.Head className={styles["sticky-header"]}>
+                <Table.HeadCell>Crop</Table.HeadCell>
+                <Table.HeadCell>Seed</Table.HeadCell>
+                <Table.HeadCell>Quantity</Table.HeadCell>
+                <Table.HeadCell>Transplant</Table.HeadCell>
+                <Table.HeadCell>Transplanted</Table.HeadCell>
+                <Table.HeadCell>Delete</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {seedlings.map((seedling, index) => {
+                  const currentDate = formatDate(seedling.seedling_date);
+                  const showDateRow = previousDate !== currentDate;
+                  previousDate = currentDate;
+                  return (
+                    <Fragment key={index}>
+                      {showDateRow && (
+                        <Table.Row className="bg-gray-200 dark:bg-gray-700">
+                          <Table.Cell colSpan={8} className="font-bold">
+                            {currentDate}
+                          </Table.Cell>
+                        </Table.Row>
+                      )}
+                      <Table.Row
+                        key={index}
+                        className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                      >
+                        <Table.Cell>{seedling.seed.crop.name}</Table.Cell>
+                        <Table.Cell>{seedling.seed.name}</Table.Cell>
+                        <Table.Cell>{seedling.quantity}</Table.Cell>
+                        <Table.Cell>
+                          {formatShortDate(seedling.transplant_date)}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {seedling.transplanted && (
+                            <HiCheck className="text-green-500" />
+                          )}
+                        </Table.Cell>
+
+                        <Table.Cell>
+                          <Button
+                            outline
+                            pill
+                            color="light"
+                            onClick={() => {
+                              setSeedlingId(seedling.id);
+                              setOpenDeleteModal(true);
+                            }}
+                          >
+                            <HiX className="h-4 w-4 text-orange-500" />
+                          </Button>
                         </Table.Cell>
                       </Table.Row>
-                    )}
-                    <Table.Row
-                      key={index}
-                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                    >
-                      <Table.Cell>{seedling.seed.crop.name}</Table.Cell>
-                      <Table.Cell>{seedling.seed.name}</Table.Cell>
-                      <Table.Cell>{seedling.quantity}</Table.Cell>
-                      <Table.Cell>
-                        {formatShortDate(seedling.transplant_date)}
-                      </Table.Cell>
-                      <Table.Cell>
-                        {seedling.transplanted && (
-                          <HiCheck className="text-green-500" />
-                        )}
-                      </Table.Cell>
-
-                      <Table.Cell>
-                        <Button
-                          outline
-                          pill
-                          color="light"
-                          onClick={() => {
-                            setSeedlingId(seedling.id);
-                            setOpenDeleteModal(true);
-                          }}
-                        >
-                          <HiX className="h-4 w-4 text-orange-500" />
-                        </Button>
-                      </Table.Cell>
-                    </Table.Row>
-                  </Fragment>
-                );
-              })}
-            </Table.Body>
-          </Table>
-        </div>
+                    </Fragment>
+                  );
+                })}
+              </Table.Body>
+            </Table>
+          </div>
+        </>
       )}
     </>
   );

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Button, Modal, Table, Toast } from "flowbite-react"; // Import the HiInformationCircle icon from the react-icons/hi package
+import { Button, Modal, Table, Toast, Dropdown } from "flowbite-react"; // Import the HiInformationCircle icon from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
 import { Timestamp } from "firebase/firestore";
 import { Spinner } from "flowbite-react";
@@ -50,15 +50,25 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
   const [message, setMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<string>("");
+  const [selectedCrop, setSelectedCrop] = useState("Select Crop");
+  const [crops, setCrops] = useState<Crop[]>([]);
+  const [selectedId, setSelectedId] = useState(0);
 
   const fetchTransplants = async () => {
     setLoading(true); // Set loading to true before fetching data
 
     try {
       const farmUid = localStorage.getItem("farm_uid") ?? "";
-      const response = await axios.get(
-        `${apiUrl}/public/transplants/get?farm_uid=${farmUid}`
-      );
+      let response;
+      if (selectedId) {
+        response = await axios.get(
+          `${apiUrl}/public/transplants/get?farm_uid=${farmUid}&crop_id=${selectedId}`
+        );
+      } else {
+        response = await axios.get(
+          `${apiUrl}/public/transplants/get?farm_uid=${farmUid}`
+        );
+      }
       if (response.data.status && response.data.status === "NOK") {
         console.error(response.data.message);
         setTransplants([]);
@@ -72,8 +82,35 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
     }
   };
 
+  const getCrops = async () => {
+    try {
+      setLoading(true);
+      const farmUid = localStorage.getItem("farm_uid") ?? "";
+      const crops = await axios.get(
+        `${apiUrl}/public/crops/get?farm_uid=${farmUid}`
+      );
+      if (crops.data.status && crops.data.status === "NOK") {
+        setMessage(crops.data.message);
+        setCrops([]);
+      } else {
+        setCrops(crops.data);
+      }
+    } catch (error) {
+      console.error("Error fetching crops names:", error);
+      setMessage("Error fetching crops names.");
+      setShowToast(true);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchTransplants();
+  }, [refresh, selectedId]);
+
+  useEffect(() => {
+    getCrops();
   }, [refresh]);
 
 
@@ -172,6 +209,20 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
           <Spinner aria-label="Extra large spinner example" size="xl" />
         </div>
       ) : (
+        <>
+          <Dropdown label={selectedCrop} color="light">
+            {crops.map((crop, index) => (
+              <Dropdown.Item
+                onClick={() => {
+                  setSelectedCrop(crop.name);
+                  setSelectedId(Number(crop.id));
+                }}
+                key={index}
+              >
+                {crop.name}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
         <div className={styles["table-width-responsive"]}>
           <Table striped className="mt-5">
             <Table.Head className={styles["sticky-header"]}>
@@ -227,6 +278,7 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
             </Table.Body>
           </Table>
         </div>
+        </>
       )}
     </React.Fragment>
   );
