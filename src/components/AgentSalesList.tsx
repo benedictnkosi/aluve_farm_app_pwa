@@ -150,7 +150,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         setTotalSalesAmount(totalSalesAmountForAllDeliveries.toFixed(2));
         setTotalAmountPaid(totalPaidAmountForAllDeliveries.toFixed(2));
         const percentOwed =
-          (Number(totalAmountPaid) / Number(totalSalesAmountForAllDeliveries)) *
+          (Number(totalPaidAmountForAllDeliveries) / Number(totalSalesAmountForAllDeliveries)) *
           100;
         setPercentOwed(percentOwed);
       }
