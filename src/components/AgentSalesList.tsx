@@ -660,19 +660,21 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                           </div>
                         </Table.Cell>
                         <Table.Cell className="font-bold">
-                          <Button
-                            color="light"
-                            outline
-                            size="xs"
-                            onClick={() => {
-                              setOpenSaleModal(true);
-                              setDeliveryId(delivery.id);
-                              setCrop(delivery.crop_name);
-                              setDeliveryQuantity(delivery.quantity);
-                            }}
-                          >
-                            <span>Add Sale</span>
-                          </Button>
+                          {delivery.sales.reduce((total, sale) => total + sale.quantity, 0) !== delivery.quantity && (
+                            <Button
+                              color="light"
+                              outline
+                              size="xs"
+                              onClick={() => {
+                                setOpenSaleModal(true);
+                                setDeliveryId(delivery.id);
+                                setCrop(delivery.crop_name);
+                                setDeliveryQuantity(delivery.quantity);
+                              }}
+                            >
+                              <span>Add Sale</span>
+                            </Button>
+                          )}
                         </Table.Cell>
                         <Table.Cell className="font-bold">
                           <Button
