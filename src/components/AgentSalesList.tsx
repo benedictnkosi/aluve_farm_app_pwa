@@ -45,6 +45,7 @@ interface Sales {
   price: number;
   quantity: number;
   total_paid: number;
+  paid:boolean;
 }
 
 interface SalesListProps {
@@ -253,6 +254,32 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
     }
   };
 
+  const markAsPaid = async () => {
+    resetValues();
+    setLoading(true);
+    try {
+      const response = await axios.post(`${apiUrl}/public/sale/paid`, {
+        agent_sale_id: saleId,
+        farm_uid: localStorage.getItem("farm_uid"),
+      });
+
+      if (response.data.status === "OK") {
+        setShowToast(true);
+        setMessage("Sale updated successfully.");
+        setOpenModal(false);
+        fetchSales();
+      } else {
+        setIsError(true);
+        setMessage(response.data.message);
+      }
+    } catch {
+      setIsError(true);
+      setMessage("Error updating sale.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const resetValues = (): void => {
     setIsError(false);
     setShowToast(false);
@@ -386,6 +413,16 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
               <Spinner aria-label="Spinner button example" size="sm" />
             )}
             <span className="pl-3">Save</span>
+          </Button>
+          <Button
+            gradientDuoTone="greenToBlue"
+            outline
+            onClick={() => markAsPaid()}
+          >
+            {loading && (
+              <Spinner aria-label="Spinner button example" size="sm" />
+            )}
+            <span className="pl-3">Mark Paid</span>
           </Button>
           <Button
             gradientDuoTone="greenToBlue"
@@ -669,7 +706,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                               </Table.Cell>
                               <Table.Cell>
                                 {sale.total_paid >=
-                                sale.quantity * sale.price ? (
+                                sale.quantity * sale.price || sale.paid ? (
                                   <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
                                     <HiCheck className="h-5 w-5" />
                                   </div>
