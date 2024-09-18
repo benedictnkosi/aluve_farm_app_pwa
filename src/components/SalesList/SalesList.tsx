@@ -16,6 +16,7 @@ import styles from "../Pages.module.scss";
 import axios from "axios";
 import { formatDate } from "../Functions/common";
 import React from "react";
+import SalesStatCard from "../SalesStatCard";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -29,6 +30,7 @@ interface SaleWithDetails {
   payment: string;
   total_payments: string;
   sale_id: string;
+  packaging: string;
   // other fields...
 }
 
@@ -56,6 +58,8 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [selectedCustomer, setSelectedCustomer] = useState("Select Customer");
   const [customers, setCustomers] = useState<Item[]>([]);
   const [selectedId, setSelectedId] = useState(0);
+  const [totalSalesAmount, setTotalSalesAmount] = useState<Number>(0);
+
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -70,6 +74,11 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
         setSales([]);
       } else {
         setSales(response.data); // Pass response.data instead of salesData.data
+        let total = 0;
+        response.data.map((sale: SaleWithDetails) => {
+          total += sale.quantity * sale.price;
+        });
+        setTotalSalesAmount(total);
       }
     } catch {
       setShowToast(true);
@@ -307,6 +316,15 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
         </div>
       ) : (
         <>
+        <div className="flex items-center">
+            <div className="mr-5">
+              <SalesStatCard
+                amount={totalSalesAmount.toString()}
+                description={"Total Sales"}
+              />
+            </div>
+          </div>
+
           <Dropdown label={selectedCustomer} color="light">
             {customers.map((customer, index) => (
               <Dropdown.Item
@@ -355,7 +373,8 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
                         <p>{sale.crop_name}</p>
                         <p>{sale.customer_name}</p>
                       </Table.Cell>
-                      <Table.Cell>{sale.crop_name}</Table.Cell>
+                      <Table.Cell><p>{sale.crop_name}</p>
+                      <p>{sale.packaging} </p></Table.Cell>
                       <Table.Cell>{sale.customer_name}</Table.Cell>
                       <Table.Cell>{sale.quantity}</Table.Cell>
                       <Table.Cell>R{sale.price}</Table.Cell>
