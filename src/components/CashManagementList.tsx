@@ -68,7 +68,8 @@ export const CashManagementList: React.FC<SalesListProps> = ({ refresh }) => {
             </Table.Head>
             <Table.Body className="divide-y">
               {report.map((reportRecord, index) => {
-
+                console.log(`before ${reportRecord.date}`);
+                console.log(formatShortDate(reportRecord.date));
                 return (
                   <Fragment key={index}>
                     
