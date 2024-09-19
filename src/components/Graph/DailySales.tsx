@@ -81,6 +81,7 @@ export const DailySales: React.FC = () => {
     return data.map((item) => ({
       ...item,
       date: new Date(item.date).toLocaleDateString("en-US", {
+        timeZone: "Africa/Harare",
         year: "numeric",
         month: "short",
         day: "numeric",

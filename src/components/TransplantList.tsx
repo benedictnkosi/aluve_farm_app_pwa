@@ -151,6 +151,7 @@ export const TransplantList: React.FC<SalesListProps> = ({ refresh }) => {
     const date =
       typeof timestamp === "string" ? new Date(timestamp) : timestamp.toDate();
     const formattedDate = date.toLocaleDateString("en-US", {
+      timeZone: "Africa/Harare",
       day: "numeric",
       month: "long",
     });
