@@ -133,7 +133,7 @@ export const CashManagement = () => {
                   <legend className="mb-4">Withdrawal Date?</legend>
                   <Datepicker
                   maxDate={new Date()}
-                    onSelectedDateChanged={(newDate) => setWithdralDate(new Date(newDate.getTime() + 24 * 60 * 60 * 1000))}
+                    onSelectedDateChanged={(newDate) => setWithdralDate(new Date(newDate.getTime()  ))}
                   />
                 </div>
               </form>
