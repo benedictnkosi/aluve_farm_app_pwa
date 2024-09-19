@@ -29,13 +29,6 @@ export function formatAmount(amount: number): string {
     return formattedDate;
   };
 
-  export  const formatShortDate = (timestamp: Timestamp | string): string => {
-    const date =
-      typeof timestamp === "string" ? new Date(timestamp) : timestamp.toDate();
-    const formattedDate = date.toLocaleDateString("en-US", {
-      timeZone: "Africa/Harare",
-      day: "numeric",
-      month: "long"
-    });
-    return formattedDate;
+  export  const formatShortDate = (timestamp: string): string => {
+    return timestamp.split('T')[0];
   };
