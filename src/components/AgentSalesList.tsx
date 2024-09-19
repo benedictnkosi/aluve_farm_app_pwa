@@ -599,13 +599,13 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
           <div className="flex items-center">
             <div className="mr-5">
               <SalesStatCard
-                amount={totalSalesAmount.toString()}
+                amount={totalSalesAmount.toFixed(2).toString()}
                 description={"Total Sales"}
               />
             </div>
             <div className="mr-5">
               <SalesStatCard
-                amount={totalAmountPaid.toString()}
+                amount={totalAmountPaid.toFixed(2).toString()}
                 description={"Total Paid"}
               />
             </div>
