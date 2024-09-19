@@ -10,7 +10,7 @@ import {
   TextInput,
   Toast,
 } from "flowbite-react";
-import {  useState } from "react";
+import { useState } from "react";
 import { HiCheck, HiInformationCircle, HiExclamation } from "react-icons/hi";
 import axios from "axios";
 import { SidebarNav } from "./NavBar/SidebarNav";
@@ -31,10 +31,9 @@ export const CashManagement = () => {
   const [refresh, setRefresh] = useState<boolean>(false); // Add state for refresh
   const [isError, setIsError] = useState(false);
 
-  
   const withdrawCash = async () => {
     setLoading(true);
-    
+
     try {
       const response = await axios.post(`${apiUrl}/public/cash/withdraw`, {
         amount: amount,
@@ -68,7 +67,9 @@ export const CashManagement = () => {
         <div>
           <div className="flex mt-5">
             <div className={styles["section-header"]}>Cash Management</div>
-            <Button  outline gradientDuoTone="greenToBlue"
+            <Button
+              outline
+              gradientDuoTone="greenToBlue"
               className="ml-auto"
               color="light"
               onClick={() => setOpenModal(true)}
@@ -110,7 +111,7 @@ export const CashManagement = () => {
                     }}
                   />
                 </div>
-                
+
                 <div>
                   <div className="mb-2 block">
                     <Label htmlFor="comment" value="Comment" />
@@ -131,40 +132,55 @@ export const CashManagement = () => {
 
                 <div>
                   <legend className="mb-4">Withdrawal Date?</legend>
+
                   <Datepicker
-                  maxDate={new Date()}
-                    onSelectedDateChanged={(newDate) => setWithdralDate(new Date(newDate.getTime()  ))}
+                    maxDate={new Date()}
+                    onSelectedDateChanged={(newDate) =>
+                      setWithdralDate(
+                        new Date(newDate.getTime() + 24 * 60 * 60 * 1000)
+                      )
+                    }
                   />
                 </div>
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button gradientDuoTone="greenToBlue" outline onClick={() => withdrawCash()}>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                onClick={() => withdrawCash()}
+              >
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button outline  gradientDuoTone="greenToBlue" color="gray" onClick={() => setOpenModal(false)}>
+              <Button
+                outline
+                gradientDuoTone="greenToBlue"
+                color="gray"
+                onClick={() => setOpenModal(false)}
+              >
                 Cancel
               </Button>
             </Modal.Footer>
           </Modal>
 
           {showToast && (
-        <Toast >
-          {isError ? (
-            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200 ">
-              <HiExclamation className="h-5 w-5" />
-            </div>          ) : (
-            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-              <HiCheck className="h-5 w-5" />
-            </div>
+            <Toast>
+              {isError ? (
+                <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200 ">
+                  <HiExclamation className="h-5 w-5" />
+                </div>
+              ) : (
+                <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                  <HiCheck className="h-5 w-5" />
+                </div>
+              )}
+              <div className="ml-3 text-sm font-normal">{message}</div>
+              <Toast.Toggle onClick={() => setShowToast(false)} />
+            </Toast>
           )}
-          <div className="ml-3 text-sm font-normal">{message}</div>
-          <Toast.Toggle  onClick={() => setShowToast(false)} />
-        </Toast>
-      )}
         </div>
       </div>
     </>
