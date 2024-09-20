@@ -27,8 +27,13 @@ export const SalesTarget: React.FC = () => {
         const totalSales = response.data.totalSalesThisMonth + response.data.totalAgentSalesThisMonth;
         const farmTarget = localStorage.getItem("farm_target");
         const targetPercent = totalSales / (farmTarget ? parseInt(farmTarget) : 1) * 100;
-        setProgressBarText(`${totalSales}/${farmTarget}`);
-        setTargetPercent(Math.floor(targetPercent));
+        if (isNaN(targetPercent) || !isFinite(targetPercent)) {
+          setProgressBarText(`0/0`);
+          setTargetPercent(0);
+        } else {
+          setProgressBarText(`${totalSales}/${farmTarget}`);
+          setTargetPercent(Math.floor(targetPercent));
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -47,11 +52,11 @@ export const SalesTarget: React.FC = () => {
         <div className="text-center">
           <Spinner aria-label="Extra large spinner example" size="xl" />
         </div>
-      ) : (
+      ) : targetPercent > 0 ? (
         <div className={"container mt-4"}>
           <Progress progress={targetPercent} textLabel={progressBarText} size="lg" labelProgress labelText />
         </div>
-      )}
+      ) : null}
     </>
   );
 };

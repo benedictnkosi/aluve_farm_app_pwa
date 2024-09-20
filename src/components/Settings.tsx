@@ -135,6 +135,9 @@ export const Settings = () => {
           setIsError(true);
           setMessage(response.data.message);
         }
+      }else{
+        setIsError(true);
+        setMessage("Invalid value.");
       }
     } catch {
       setIsError(true);
