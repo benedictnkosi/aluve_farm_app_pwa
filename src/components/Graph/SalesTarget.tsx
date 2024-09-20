@@ -31,7 +31,7 @@ export const SalesTarget: React.FC = () => {
           setProgressBarText(`0/0`);
           setTargetPercent(0);
         } else {
-          setProgressBarText(`${totalSales}/${farmTarget}`);
+          setProgressBarText(`${Math.floor(totalSales)}/${farmTarget}`);
           setTargetPercent(Math.floor(targetPercent));
         }
       }
