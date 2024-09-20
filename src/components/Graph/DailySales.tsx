@@ -41,7 +41,7 @@ export const DailySales: React.FC = () => {
         console.error(response.data.message);
         setData([]);
       } else {
-        setAgentData(response.data); // Pass response.data instead of salesData.data
+        setData(response.data); // Pass response.data instead of salesData.data
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -61,9 +61,9 @@ export const DailySales: React.FC = () => {
       );
       if (response.data.status && response.data.status === "NOK") {
         console.error(response.data.message);
-        setData([]);
+        setAgentData([]);
       } else {
-        setData(response.data); // Pass response.data instead of salesData.data
+        setAgentData(response.data); // Pass response.data instead of salesData.data
       }
     } catch (error) {
       console.error("Error fetching data:", error);

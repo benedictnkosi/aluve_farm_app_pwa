@@ -19,7 +19,12 @@ import {
 } from "flowbite-react";
 
 import { useEffect, useState } from "react";
-import { HiCheck, HiInformationCircle, HiCog, HiExclamation } from "react-icons/hi";
+import {
+  HiCheck,
+  HiInformationCircle,
+  HiCog,
+  HiExclamation,
+} from "react-icons/hi";
 import axios from "axios";
 import { SidebarNav } from "./NavBar/SidebarNav";
 import { PackagingList } from "./PackagingList";
@@ -55,7 +60,7 @@ export const Settings = () => {
   const [contactNumber, setContactNumber] = useState("");
   const [openCustomerModal, setOpenCustomerModal] = useState<boolean>(false); // Add state for refresh
   const [customerName, setCustomerName] = useState("");
-
+  const [farmTarget, setFarmTarget] = useState(0);
 
   const [isError, setIsError] = useState(false);
 
@@ -72,7 +77,7 @@ export const Settings = () => {
       } else {
         setCrops(crops.data);
       }
-    } catch(error) {
+    } catch (error) {
       console.error("Error fetching crops names:", error);
       setMessage("Error fetching crops names.");
       setShowToast(true);
@@ -110,6 +115,53 @@ export const Settings = () => {
     }
   };
 
+  const updateFarmTarget = async () => {
+    setLoading(true);
+
+    try {
+      if (farmTarget > 0) {
+        setFarmTarget(farmTarget);
+        const response = await axios.put(`${apiUrl}/public/farm/target`, {
+          amount: farmTarget,
+          farm_uid: localStorage.getItem("farm_uid"),
+        });
+
+        if (response.data.status === "OK") {
+          setShowToast(true);
+          setMessage(response.data.message);
+          setRefresh(!refresh);
+          setOpenModal(false);
+        } else {
+          setIsError(true);
+          setMessage(response.data.message);
+        }
+      }
+    } catch {
+      setIsError(true);
+      setMessage("Error updating farm target.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getFarmTarget = async () => {
+    try {
+      const farmTargetValue = localStorage.getItem("farm_target");
+      setFarmTarget(farmTargetValue ? parseInt(farmTargetValue) : 0);
+    } catch (error) {
+      console.error("Error fetching crops names:", error);
+      setMessage("Error fetching crops names.");
+      setShowToast(true);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getFarmTarget();
+  }, []);
+
   const createCustomer = async () => {
     setLoading(true);
 
@@ -139,7 +191,6 @@ export const Settings = () => {
       setLoading(false);
     }
   };
-
 
   const createCrop = async () => {
     setLoading(true);
@@ -196,7 +247,7 @@ export const Settings = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     if (openModal || openPackagingModal) {
       setIsError(false);
@@ -213,7 +264,9 @@ export const Settings = () => {
           <Tabs.Item active title="Crops" icon={HiCog}>
             <div className="flex mt-5">
               <div className={styles["section-header"]}>Crops</div>
-              <Button  gradientDuoTone="greenToBlue" outline
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
                 className="ml-auto"
                 color="light"
                 onClick={() => setOpenCropsModal(true)}
@@ -227,7 +280,9 @@ export const Settings = () => {
           <Tabs.Item title="Seeds" icon={HiCog}>
             <div className="flex mt-5">
               <div className={styles["section-header"]}>Seeds</div>
-              <Button  gradientDuoTone="greenToBlue" outline
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
                 className="ml-auto"
                 color="light"
                 onClick={() => setOpenModal(true)}
@@ -240,7 +295,9 @@ export const Settings = () => {
           <Tabs.Item title="Packaging" icon={HiCog}>
             <div className="flex mt-5">
               <div className={styles["section-header"]}>Packaging</div>
-              <Button  gradientDuoTone="greenToBlue" outline
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
                 className="ml-auto"
                 color="light"
                 onClick={() => setOpenPackagingModal(true)}
@@ -256,11 +313,13 @@ export const Settings = () => {
           <Tabs.Item title="Pesticide" icon={HiCog}>
             <div>Pesticide</div>
           </Tabs.Item>
-          
+
           <Tabs.Item title="Customers" icon={HiCog}>
-          <div className="flex mt-5">
+            <div className="flex mt-5">
               <div className={styles["section-header"]}>Customers</div>
-              <Button  gradientDuoTone="greenToBlue" outline
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
                 className="ml-auto"
                 color="light"
                 onClick={() => setOpenCustomerModal(true)}
@@ -271,13 +330,48 @@ export const Settings = () => {
 
             <CustomerList refreshCustomers={refreshCustomers} />
           </Tabs.Item>
-          <Tabs.Item title="Joining ID" icon={HiCog}>
+          <Tabs.Item title="Farm" icon={HiCog}>
             <div>{localStorage.getItem("farm_uid")}</div>
+            {isError && (
+              <Alert color="failure" icon={HiInformationCircle}>
+                <span className="font-medium">Info alert!</span> {message}
+              </Alert>
+            )}
+
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="farmTarget" value="Farm Target" />
+              </div>
+              <TextInput
+                id="farmTarget"
+                type="number"
+                placeholder="20000"
+                required
+                value={farmTarget}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (event && event.target) {
+                    setFarmTarget(parseInt(event.target.value));
+                  }
+                }}
+              />
+            </div>
+
+            <div>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                onClick={() => updateFarmTarget()}
+              >
+                {loading && (
+                  <Spinner aria-label="Spinner button example" size="sm" />
+                )}
+                <span className="pl-3">Save</span>
+              </Button>
+            </div>
           </Tabs.Item>
         </Tabs>
 
         <div>
-
           {/* Create new seed modal */}
           <Modal
             id="CreateCustomerModal"
@@ -313,11 +407,11 @@ export const Settings = () => {
 
                 <div className="flex items-center gap-2">
                   <Checkbox
-                  id="isAgent"
-                  checked={isAgent}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    setIsAgent(event.target.checked);
-                  }}
+                    id="isAgent"
+                    checked={isAgent}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setIsAgent(event.target.checked);
+                    }}
                   />
                   <Label htmlFor="isAgent">Is this an agent</Label>
                 </div>
@@ -357,22 +451,29 @@ export const Settings = () => {
                     }}
                   />
                 </div>
-
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button gradientDuoTone="greenToBlue" outline onClick={() => createCustomer()}>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                onClick={() => createCustomer()}
+              >
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenCustomerModal(false)}>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                color="gray"
+                onClick={() => setOpenCustomerModal(false)}
+              >
                 Cancel
               </Button>
             </Modal.Footer>
           </Modal>
-
 
           {/* Create new seed modal */}
           <Modal
@@ -443,19 +544,28 @@ export const Settings = () => {
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button gradientDuoTone="greenToBlue" outline onClick={() => createSeed()}>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                onClick={() => createSeed()}
+              >
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenModal(false)}>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                color="gray"
+                onClick={() => setOpenModal(false)}
+              >
                 Cancel
               </Button>
             </Modal.Footer>
           </Modal>
 
-        {/* Create new crop modal */}
+          {/* Create new crop modal */}
           <Modal
             id="CreateCropModal"
             show={openCropsModal}
@@ -490,20 +600,29 @@ export const Settings = () => {
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button gradientDuoTone="greenToBlue" outline onClick={() => createCrop()}>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                onClick={() => createCrop()}
+              >
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenCropsModal(false)}>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                color="gray"
+                onClick={() => setOpenCropsModal(false)}
+              >
                 Cancel
               </Button>
             </Modal.Footer>
           </Modal>
 
-        {/* Create new packaging modal */}
-        <Modal
+          {/* Create new packaging modal */}
+          <Modal
             id="CreatePackagingModal"
             show={openPackagingModal}
             onClose={() => setOpenPackagingModal(false)}
@@ -518,7 +637,7 @@ export const Settings = () => {
                 )}
 
                 <div>
-                <Dropdown label={selectedCrop} color="light">
+                  <Dropdown label={selectedCrop} color="light">
                     {crops.map((crop, index) => (
                       <Dropdown.Item
                         onClick={() => {
@@ -571,32 +690,42 @@ export const Settings = () => {
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button gradientDuoTone="greenToBlue" outline onClick={() => createPackaging()}>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                onClick={() => createPackaging()}
+              >
                 {loading && (
                   <Spinner aria-label="Spinner button example" size="sm" />
                 )}
                 <span className="pl-3">Save</span>
               </Button>
-              <Button gradientDuoTone="greenToBlue" outline color="gray" onClick={() => setOpenPackagingModal(false)}>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                color="gray"
+                onClick={() => setOpenPackagingModal(false)}
+              >
                 Cancel
               </Button>
             </Modal.Footer>
           </Modal>
 
           {showToast && (
-        <Toast >
-          {isError ? (
-            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200 ">
-              <HiExclamation className="h-5 w-5" />
-            </div>          ) : (
-            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-              <HiCheck className="h-5 w-5" />
-            </div>
+            <Toast>
+              {isError ? (
+                <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200 ">
+                  <HiExclamation className="h-5 w-5" />
+                </div>
+              ) : (
+                <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                  <HiCheck className="h-5 w-5" />
+                </div>
+              )}
+              <div className="ml-3 text-sm font-normal">{message}</div>
+              <Toast.Toggle onClick={() => setShowToast(false)} />
+            </Toast>
           )}
-          <div className="ml-3 text-sm font-normal">{message}</div>
-          <Toast.Toggle  onClick={() => setShowToast(false)} />
-        </Toast>
-      )}
         </div>
       </div>
     </>

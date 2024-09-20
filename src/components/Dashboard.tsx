@@ -8,13 +8,15 @@ import { DailySales } from "./Graph/DailySales";
 import { useNavigate } from "react-router-dom";
 import { SidebarNav } from "./NavBar/SidebarNav";
 import React from "react";
-import  WeeklySeedling  from "./Graph/WeeklySeedling";
+import WeeklySeedling from "./Graph/WeeklySeedling";
 import WeeklyTransplant from "./Graph/WeeklyTransplant";
+import {SalesTarget} from "./Graph/SalesTarget";
 
 export const Dashboard = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isBelongsToFarm, setIsBelongsToFarm] = useState<boolean>(false);
   const navigate = useNavigate(); // Use the useNavigate hook
+
   const checkFarm = async () => {
     setLoading(true);
     try {
@@ -46,20 +48,22 @@ export const Dashboard = () => {
 
   return (
     <React.Fragment>
-      
-      {isBelongsToFarm &&(<NavBar />)}
+      {isBelongsToFarm && <NavBar />}
       <div className="flex">
-      {isBelongsToFarm &&(<SidebarNav />)}
+        {isBelongsToFarm && <SidebarNav />}
         <div className="container mt-4">
           <div className={styles["market-list"]}>
             <div className={styles["container"]}>
-              {isBelongsToFarm && <div>
-                <DailySales></DailySales>
-                    <div className={styles["flex-desktop"]}>
+              {isBelongsToFarm && (
+                <div>
+                  <SalesTarget/>
+                  <DailySales></DailySales>
+                  <div className={styles["flex-desktop"]}>
                     <WeeklySeedling></WeeklySeedling>
                     <WeeklyTransplant></WeeklyTransplant>
-                    </div>
-                </div>}
+                  </div>
+                </div>
+              )}
               {!isBelongsToFarm && (
                 <JoinCreateFarm setIsBelongsToFarm={setIsBelongsToFarm} />
               )}
