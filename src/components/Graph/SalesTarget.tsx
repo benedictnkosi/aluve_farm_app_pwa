@@ -1,24 +1,13 @@
 // Import the HiInformationCircle icon from the react-icons/hi package
 import { useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
-import styles from "../Pages.module.scss";
 import axios from "axios";
 import React from "react";
 import { Progress } from "flowbite-react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-interface Item {
-  status: string;
-  totalSalesThisMonth: number;
-  totalSalesLastMonth: number;
-  totalAgentSalesThisMonth: number;
-  totalAgentSalesLastMonth: number;
-  // other fields...
-}
-
 export const SalesTarget: React.FC = () => {
-  const [data, setData] = useState<Item[]>([]);
   const [targetPercent, setTargetPercent] = useState<number>(0);
   const [progressBarText, setProgressBarText] = useState<string>("");
 
@@ -34,14 +23,12 @@ export const SalesTarget: React.FC = () => {
       );
       if (response.data.status && response.data.status === "NOK") {
         console.error(response.data.message);
-        setData([]);
       } else {
         const totalSales = response.data.totalSalesThisMonth + response.data.totalAgentSalesThisMonth;
         const farmTarget = localStorage.getItem("farm_target");
         const targetPercent = totalSales / (farmTarget ? parseInt(farmTarget) : 1) * 100;
         setProgressBarText(`${totalSales}/${farmTarget}`);
         setTargetPercent(Math.floor(targetPercent));
-        setData(response.data); // Pass response.data instead of salesData.data
       }
     } catch (error) {
       console.error("Error fetching data:", error);
