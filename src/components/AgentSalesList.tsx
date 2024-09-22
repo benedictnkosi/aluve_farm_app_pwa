@@ -45,7 +45,7 @@ interface Sales {
   price: number;
   quantity: number;
   total_paid: number;
-  paid:boolean;
+  paid: boolean;
 }
 
 interface SalesListProps {
@@ -84,6 +84,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [totalSalesAmount, setTotalSalesAmount] = useState<Number>(0);
   const [totalAmountPaid, setTotalAmountPaid] = useState<Number>(0);
   const [percentOwed, setPercentOwed] = useState<number>(0);
+  const [selectedDays, setSelectedDays] = useState("30 days");
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -93,11 +94,17 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
       let response;
       if (selectedId > 0) {
         response = await axios.get(
-          `${apiUrl}/public/agentsales/get?farm_uid=${farmUid}&agent_id=${selectedId}`
+          `${apiUrl}/public/agentsales/get?farm_uid=${farmUid}&agent_id=${selectedId}&days=${selectedDays.replace(
+            " days",
+            ""
+          )}`
         );
       } else {
         response = await axios.get(
-          `${apiUrl}/public/agentsales/get?farm_uid=${farmUid}`
+          `${apiUrl}/public/agentsales/get?farm_uid=${farmUid}&days=${selectedDays.replace(
+            " days",
+            ""
+          )}`
         );
       }
 
@@ -151,7 +158,8 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         setTotalSalesAmount(totalSalesAmountForAllDeliveries);
         setTotalAmountPaid(totalPaidAmountForAllDeliveries);
         const percentOwed =
-          (Number(totalPaidAmountForAllDeliveries) / Number(totalSalesAmountForAllDeliveries)) *
+          (Number(totalPaidAmountForAllDeliveries) /
+            Number(totalSalesAmountForAllDeliveries)) *
           100;
         setPercentOwed(percentOwed);
       }
@@ -183,7 +191,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
 
   useEffect(() => {
     fetchSales();
-  }, [refresh, selectedId]);
+  }, [refresh, selectedId, selectedDays]);
 
   useEffect(() => {
     getCustomerNames();
@@ -600,7 +608,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
             <div className="mr-5">
               <SalesStatCard
                 amount={totalSalesAmount.toFixed(2).toString()}
-                description={"Total Sales"}
+                description={"Sales"}
               />
             </div>
             <div className="mr-5">
@@ -610,24 +618,42 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
               />
             </div>
             <SalesStatCard
-              amount={isNaN(percentOwed) ? "0%" : percentOwed.toFixed(2).toString() + "%"}
+              amount={
+                isNaN(percentOwed)
+                  ? "0%"
+                  : percentOwed.toFixed(2).toString() + "%"
+              }
               description={"Paid"}
             />
           </div>
-          <Dropdown label={selectedCustomer} color="light">
-            {customers.map((customer, index) => (
-              <Dropdown.Item
-                onClick={() => {
-                  setSelectedCustomer(customer.name);
-                  setSelectedId(Number(customer.id));
-                }}
-                key={index}
-              >
-                {customer.name}
-              </Dropdown.Item>
-            ))}
-          </Dropdown>
 
+          <div className="flex items-center space-x-3">
+            <Dropdown label={selectedCustomer} color="light">
+              {customers.map((customer, index) => (
+                <Dropdown.Item
+                  onClick={() => {
+                    setSelectedCustomer(customer.name);
+                    setSelectedId(Number(customer.id));
+                  }}
+                  key={index}
+                >
+                  {customer.name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown>
+
+            <Dropdown label={selectedDays} color="light">
+              <Dropdown.Item onClick={() => setSelectedDays("30 days")}>
+                30 days
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => setSelectedDays("60 days")}>
+                60 days
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => setSelectedDays("90 days")}>
+                90 days
+              </Dropdown.Item>
+            </Dropdown>
+          </div>
           <div className={styles["table-width-responsive"]}>
             <Table striped className="mt-5">
               <Table.Head className={styles["sticky-header"]}>
@@ -660,7 +686,10 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                           </div>
                         </Table.Cell>
                         <Table.Cell className="font-bold">
-                          {delivery.sales.reduce((total, sale) => total + sale.quantity, 0) !== delivery.quantity && (
+                          {delivery.sales.reduce(
+                            (total, sale) => total + sale.quantity,
+                            0
+                          ) !== delivery.quantity && (
                             <Button
                               color="light"
                               outline
@@ -708,7 +737,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                               </Table.Cell>
                               <Table.Cell>
                                 {sale.total_paid >=
-                                sale.quantity * sale.price || sale.paid ? (
+                                  sale.quantity * sale.price || sale.paid ? (
                                   <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
                                     <HiCheck className="h-5 w-5" />
                                   </div>

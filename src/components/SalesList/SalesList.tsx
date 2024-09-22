@@ -7,9 +7,16 @@ import {
   TextInput,
   Toast,
   Radio,
-  Dropdown
+  Dropdown,
 } from "flowbite-react";
-import { HiInformationCircle, HiCheck,HiOutlineCash, HiExclamation, HiX, HiOutlineExclamationCircle } from "react-icons/hi"; // Import the HiInformationCircle icon from the react-icons/hi package
+import {
+  HiInformationCircle,
+  HiCheck,
+  HiOutlineCash,
+  HiExclamation,
+  HiX,
+  HiOutlineExclamationCircle,
+} from "react-icons/hi"; // Import the HiInformationCircle icon from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
 import styles from "../Pages.module.scss";
@@ -59,7 +66,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [customers, setCustomers] = useState<Item[]>([]);
   const [selectedId, setSelectedId] = useState(0);
   const [totalSalesAmount, setTotalSalesAmount] = useState<Number>(0);
-
+  const [selectedDays, setSelectedDays] = useState("30 days");
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -67,7 +74,10 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
     try {
       const farmUid = localStorage.getItem("farm_uid") ?? "";
       const response = await axios.get(
-        `${apiUrl}/public/sales/get?farm_uid=${farmUid}`
+        `${apiUrl}/public/sales/get?farm_uid=${farmUid}&days=${selectedDays.replace(
+          " days",
+          ""
+        )}`
       );
       if (response.data.status && response.data.status === "NOK") {
         console.error(response.data.message);
@@ -108,7 +118,7 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
 
   useEffect(() => {
     fetchSales();
-  }, [refresh, selectedId]);
+  }, [refresh, selectedId, selectedDays]);
 
   useEffect(() => {
     getCustomerNames();
@@ -186,9 +196,8 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
 
   return (
     <>
-
-    {/* delete modal */}
-    <Modal
+      {/* delete modal */}
+      <Modal
         show={openDeleteModal}
         size="md"
         onClose={() => setOpenDeleteModal(false)}
@@ -296,17 +305,18 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
         </Modal.Footer>
       </Modal>
       {showToast && (
-        <Toast >
+        <Toast>
           {isError ? (
             <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200 ">
               <HiExclamation className="h-5 w-5" />
-            </div>          ) : (
+            </div>
+          ) : (
             <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
               <HiCheck className="h-5 w-5" />
             </div>
           )}
           <div className="ml-3 text-sm font-normal">{message}</div>
-          <Toast.Toggle  onClick={() => setShowToast(false)} />
+          <Toast.Toggle onClick={() => setShowToast(false)} />
         </Toast>
       )}
 
@@ -316,110 +326,126 @@ export const SalesList: React.FC<SalesListProps> = ({ refresh }) => {
         </div>
       ) : (
         <>
-        <div className="flex items-center">
+          <div className="flex items-center">
             <div className="mr-5">
               <SalesStatCard
                 amount={totalSalesAmount.toString()}
-                description={"Total Sales"}
+                description={"Sales"}
               />
             </div>
           </div>
 
-          <Dropdown label={selectedCustomer} color="light">
-            {customers.map((customer, index) => (
-              <Dropdown.Item
-                onClick={() => {
-                  setSelectedCustomer(customer.name);
-                  setSelectedId(Number(customer.id));
-                }}
-                key={index}
-              >
-                {customer.name}
+          <div className="flex items-center space-x-3">
+            <Dropdown label={selectedCustomer} color="light">
+              {customers.map((customer, index) => (
+                <Dropdown.Item
+                  onClick={() => {
+                    setSelectedCustomer(customer.name);
+                    setSelectedId(Number(customer.id));
+                  }}
+                  key={index}
+                >
+                  {customer.name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown>
+
+            <Dropdown label={selectedDays} color="light">
+              <Dropdown.Item onClick={() => setSelectedDays("30 days")}>
+                30 days
               </Dropdown.Item>
-            ))}
-          </Dropdown>
-        <div className={styles["table-width-responsive"]}>
-          <Table striped className="mt-5">
-            <Table.Head className={styles["sticky-header"]}>
-              <Table.HeadCell>Sales Details</Table.HeadCell>
-              <Table.HeadCell>Crop</Table.HeadCell>
-              <Table.HeadCell>Customer</Table.HeadCell>
-              <Table.HeadCell>Units</Table.HeadCell>
-              <Table.HeadCell>Price</Table.HeadCell>
-              <Table.HeadCell>Total</Table.HeadCell>
-              <Table.HeadCell>Paid</Table.HeadCell>
-              <Table.HeadCell>Payment</Table.HeadCell>
-              <Table.HeadCell>Delete</Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {sales.map((sale, index) => {
-                const currentDate = formatDate(sale.date);
-                const showDateRow = previousDate !== currentDate;
-                previousDate = currentDate;
-                return (
-                  <Fragment key={index}>
-                    {showDateRow && (
-                      <Table.Row className="bg-gray-200 dark:bg-gray-700">
-                        <Table.Cell colSpan={8} className="font-bold">
-                          {currentDate}
+              <Dropdown.Item onClick={() => setSelectedDays("60 days")}>
+                60 days
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => setSelectedDays("90 days")}>
+                90 days
+              </Dropdown.Item>
+            </Dropdown>
+          </div>
+          <div className={styles["table-width-responsive"]}>
+            <Table striped className="mt-5">
+              <Table.Head className={styles["sticky-header"]}>
+                <Table.HeadCell>Sales Details</Table.HeadCell>
+                <Table.HeadCell>Crop</Table.HeadCell>
+                <Table.HeadCell>Customer</Table.HeadCell>
+                <Table.HeadCell>Units</Table.HeadCell>
+                <Table.HeadCell>Price</Table.HeadCell>
+                <Table.HeadCell>Total</Table.HeadCell>
+                <Table.HeadCell>Paid</Table.HeadCell>
+                <Table.HeadCell>Payment</Table.HeadCell>
+                <Table.HeadCell>Delete</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {sales.map((sale, index) => {
+                  const currentDate = formatDate(sale.date);
+                  const showDateRow = previousDate !== currentDate;
+                  previousDate = currentDate;
+                  return (
+                    <Fragment key={index}>
+                      {showDateRow && (
+                        <Table.Row className="bg-gray-200 dark:bg-gray-700">
+                          <Table.Cell colSpan={8} className="font-bold">
+                            {currentDate}
+                          </Table.Cell>
+                        </Table.Row>
+                      )}
+                      <Table.Row
+                        key={index}
+                        className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                      >
+                        <Table.Cell>
+                          <p>{sale.crop_name}</p>
+                          <p>{sale.customer_name}</p>
                         </Table.Cell>
-                      </Table.Row>
-                    )}
-                    <Table.Row
-                      key={index}
-                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                    >
-                      <Table.Cell>
-                        <p>{sale.crop_name}</p>
-                        <p>{sale.customer_name}</p>
-                      </Table.Cell>
-                      <Table.Cell><p>{sale.crop_name}</p>
-                      <p>{sale.packaging} </p></Table.Cell>
-                      <Table.Cell>{sale.customer_name}</Table.Cell>
-                      <Table.Cell>{sale.quantity}</Table.Cell>
-                      <Table.Cell>R{sale.price}</Table.Cell>
-                      <Table.Cell>
-                        R{(sale.quantity * sale.price)}
-                      </Table.Cell>
-                      <Table.Cell>R{sale.total_payments}</Table.Cell>
-                      <Table.Cell>
-                        {Number(sale.total_payments) >= (sale.quantity * sale.price) ? (
-                          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-                            <HiCheck className="h-5 w-5" />
-                          </div>
-                        ) : (
+                        <Table.Cell>
+                          <p>{sale.crop_name}</p>
+                          <p>{sale.packaging} </p>
+                        </Table.Cell>
+                        <Table.Cell>{sale.customer_name}</Table.Cell>
+                        <Table.Cell>{sale.quantity}</Table.Cell>
+                        <Table.Cell>R{sale.price}</Table.Cell>
+                        <Table.Cell>R{sale.quantity * sale.price}</Table.Cell>
+                        <Table.Cell>R{sale.total_payments}</Table.Cell>
+                        <Table.Cell>
+                          {Number(sale.total_payments) >=
+                          sale.quantity * sale.price ? (
+                            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                              <HiCheck className="h-5 w-5" />
+                            </div>
+                          ) : (
+                            <Button
+                              outline
+                              gradientDuoTone="cyanToBlue"
+                              onClick={() => {
+                                setAmount(
+                                  (sale.quantity * sale.price).toString()
+                                );
+                                handleAddPaymentClick(sale.sale_id);
+                              }}
+                            >
+                              <HiOutlineCash className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </Table.Cell>
+                        <Table.Cell>
                           <Button
                             outline
-                            gradientDuoTone="cyanToBlue"
+                            color="light"
                             onClick={() => {
-                              setAmount((sale.quantity * sale.price).toString());
-                              handleAddPaymentClick(sale.sale_id);
+                              setSaleId(sale.sale_id);
+                              setOpenDeleteModal(true);
                             }}
                           >
-                            <HiOutlineCash className="h-4 w-4" />
+                            <HiX className="h-4 w-4 text-orange-500" />
                           </Button>
-                        )}
-                      </Table.Cell>
-                      <Table.Cell>
-                              <Button
-                                outline
-                                
-                                color="light"
-                                onClick={() => {
-                                  setSaleId(sale.sale_id);
-                                  setOpenDeleteModal(true);
-                                }}
-                              >
-                                <HiX className="h-4 w-4 text-orange-500" />
-                              </Button>
-                            </Table.Cell>
-                    </Table.Row>
-                  </Fragment>
-                );
-              })}
-            </Table.Body>
-          </Table>
-        </div>
+                        </Table.Cell>
+                      </Table.Row>
+                    </Fragment>
+                  );
+                })}
+              </Table.Body>
+            </Table>
+          </div>
         </>
       )}
     </>
