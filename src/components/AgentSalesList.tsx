@@ -167,6 +167,10 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
 
         console.log("Total Delivered Cabbages:", totalDeliveredCabbages);
 
+        console.log("Total Sold Spinach:", totalSoldSpinach);
+
+        console.log("Total Delivered Spinach:", totalDeliveredSpinach);
+
         // Calculate total sales amount for all deliveries
         const totalSalesAmountForAllDeliveries = response.data.reduce(
           (acc: number, delivery: Delivery) =>
