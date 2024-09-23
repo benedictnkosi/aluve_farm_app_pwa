@@ -6,6 +6,8 @@ import React from "react";
 import { Progress } from "flowbite-react";
 import SalesStatCard from "../SalesStatCard";
 import { Card } from "flowbite-react";
+import { HiArrowNarrowUp , HiArrowNarrowDown   } from "react-icons/hi";
+
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -88,7 +90,14 @@ export const SalesTarget: React.FC = () => {
             <Card href="#" className="max-w-sm">
               <p className=" tracking-tight text-gray-900 dark:text-white">
                 {`Sales - ${nameOfCurrentMonth(new Date().getMonth())}`}
-                <p>{`Total - ${(salesThisMonth + agentSalesThisMonth).toFixed(2)}`}</p>
+                <div className={"container mt-4 flex space-x-4"}>
+                  {`Total - ${(salesThisMonth + agentSalesThisMonth).toFixed(2)}`}
+                    {salesThisMonth + agentSalesThisMonth > salesLastMonth + agentSalesLastMonth ? (
+                    <HiArrowNarrowUp className="text-green-500 ml-1" />
+                    ) : (
+                    <HiArrowNarrowDown className="text-red-500 ml-1" />
+                    )}
+                </div>
               </p>
               <div className={"container mt-4 flex space-x-3"}>
                 <SalesStatCard
