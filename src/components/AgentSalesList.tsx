@@ -85,6 +85,8 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [totalAmountPaid, setTotalAmountPaid] = useState<Number>(0);
   const [percentOwed, setPercentOwed] = useState<number>(0);
   const [selectedDays, setSelectedDays] = useState("30 days");
+  const [remainingCabbages, setRemainingCabbages] = useState(0);
+  const [remainingSpinach, setRemainingSpinach] = useState(0);
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -130,6 +132,41 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
           return totalAmount;
         };
 
+        // Calculate total delivered cabbages
+        const totalDeliveredCabbages = response.data.reduce(
+          (acc: number, delivery: Delivery) => 
+            delivery.crop_name === "Cabbage" ? acc + delivery.quantity : acc,
+          0
+        );
+
+        const totalDeliveredSpinach = response.data.reduce(
+          (acc: number, delivery: Delivery) => 
+            delivery.crop_name === "Spinach" ? acc + delivery.quantity : acc,
+          0
+        );
+
+        // Calculate total sold cabbages
+        const totalSoldCabbages = response.data.reduce(
+          (acc: number, delivery: Delivery) =>
+            delivery.crop_name === "Cabbage"
+              ? acc + delivery.sales.reduce((saleAcc, sale) => saleAcc + sale.quantity, 0)
+              : acc,
+          0
+        );
+
+
+        const totalSoldSpinach = response.data.reduce(
+          (acc: number, delivery: Delivery) =>
+            delivery.crop_name === "Spinch"
+              ? acc + delivery.sales.reduce((saleAcc, sale) => saleAcc + sale.quantity, 0)
+              : acc,
+          0
+        );
+
+        console.log("Total Sold Cabbages:", totalSoldCabbages);
+
+        console.log("Total Delivered Cabbages:", totalDeliveredCabbages);
+
         // Calculate total sales amount for all deliveries
         const totalSalesAmountForAllDeliveries = response.data.reduce(
           (acc: number, delivery: Delivery) =>
@@ -142,6 +179,8 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
             acc + calculateTotalPaidAmount(delivery),
           0
         );
+
+        setRemainingCabbages(totalDeliveredCabbages - totalSoldCabbages);
 
         setDeliveries(
           response.data.map((delivery: Delivery) => ({
@@ -604,19 +643,20 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         </div>
       ) : (
         <>
-          <div className="flex items-center">
-            <div className="mr-5">
+          <div className="flex items-center space-x-3">
+
               <SalesStatCard
                 amount={totalSalesAmount.toFixed(2).toString()}
                 description={"Sales"}
               />
-            </div>
-            <div className="mr-5">
+
+
               <SalesStatCard
                 amount={totalAmountPaid.toFixed(2).toString()}
                 description={"Total Paid"}
               />
-            </div>
+
+            
             <SalesStatCard
               amount={
                 isNaN(percentOwed)
@@ -624,6 +664,18 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                   : percentOwed.toFixed(2).toString() + "%"
               }
               description={"Paid"}
+            />
+            <SalesStatCard
+              amount={
+                remainingCabbages.toString()
+              }
+              description={"Cabbages On hand"}
+            />
+            <SalesStatCard
+              amount={
+                remainingSpinach.toString()
+              }
+              description={"Spinach On hand"}
             />
           </div>
 
