@@ -181,6 +181,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         );
 
         setRemainingCabbages(totalDeliveredCabbages - totalSoldCabbages);
+        setRemainingSpinach(totalDeliveredSpinach - totalSoldSpinach);
 
         setDeliveries(
           response.data.map((delivery: Delivery) => ({
