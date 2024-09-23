@@ -5,6 +5,7 @@ import axios from "axios";
 import React from "react";
 import { Progress } from "flowbite-react";
 import SalesStatCard from "../SalesStatCard";
+import { Card } from "flowbite-react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -84,22 +85,42 @@ export const SalesTarget: React.FC = () => {
       ) : targetPercent > 0 ? (
         <div>
           <div className={"container mt-4 flex space-x-3"}>
-            <SalesStatCard
-              amount={salesThisMonth.toFixed(2).toString()}
-              description={`Sales - ${nameOfCurrentMonth(new Date().getMonth())}`}
-            />
-            <SalesStatCard
-              amount={salesLastMonth.toFixed(2).toString()}
-              description={`Sales - ${nameOfCurrentMonth(new Date().getMonth() - 1)}`}
-            />
-            <SalesStatCard
-              amount={agentSalesThisMonth.toFixed(2).toString()}
-              description={`Agent - ${nameOfCurrentMonth(new Date().getMonth())}`}
-            />
-            <SalesStatCard
-              amount={agentSalesLastMonth.toFixed(2).toString()}
-              description={`Agent - ${nameOfCurrentMonth(new Date().getMonth() - 1)}`}
-            />
+            <Card href="#" className="max-w-sm">
+              <p className=" tracking-tight text-gray-900 dark:text-white">
+                {`Sales - ${nameOfCurrentMonth(new Date().getMonth())}`}
+                <p>{`Total - ${salesThisMonth + agentSalesThisMonth}`}</p>
+              </p>
+              <div className={"container mt-4 flex space-x-3"}>
+                <SalesStatCard
+                  amount={salesThisMonth.toFixed(2).toString()}
+                  description="Other"
+                />
+
+                <SalesStatCard
+                  amount={agentSalesThisMonth.toFixed(2).toString()}
+                  description="Agents"
+                />
+              </div>
+            </Card>
+
+            <Card href="#" className="max-w-sm">
+              <h5 className="tracking-tight text-gray-900 dark:text-white">
+              {`Sales - ${nameOfCurrentMonth(new Date().getMonth())}`}
+                <p>{`Total - ${salesLastMonth + agentSalesLastMonth}`}</p>
+              </h5>
+
+              <div className={"container mt-4 flex space-x-3"}>
+                <SalesStatCard
+                  amount={salesLastMonth.toFixed(2).toString()}
+                  description="Other"
+                />
+
+                <SalesStatCard
+                  amount={agentSalesLastMonth.toFixed(2).toString()}
+                  description="Agents"
+                />
+              </div>
+            </Card>
           </div>
           <div className={"container mt-4"}>
             <p>Target for this month</p>
