@@ -105,7 +105,7 @@ export const SalesTarget: React.FC = () => {
 
             <Card href="#" className="max-w-sm">
               <h5 className="tracking-tight text-gray-900 dark:text-white">
-              {`Sales - ${nameOfCurrentMonth(new Date().getMonth())}`}
+              {`Sales - ${nameOfCurrentMonth(new Date().getMonth() - 1)}`}
                 <p>{`Total - ${(salesLastMonth + agentSalesLastMonth).toFixed(2)}`}</p>
               </h5>
 
