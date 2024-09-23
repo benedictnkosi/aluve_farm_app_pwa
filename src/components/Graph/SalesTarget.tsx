@@ -88,7 +88,7 @@ export const SalesTarget: React.FC = () => {
             <Card href="#" className="max-w-sm">
               <p className=" tracking-tight text-gray-900 dark:text-white">
                 {`Sales - ${nameOfCurrentMonth(new Date().getMonth())}`}
-                <p>{`Total - ${salesThisMonth + agentSalesThisMonth}`}</p>
+                <p>{`Total - ${(salesThisMonth + agentSalesThisMonth).toFixed(2)}`}</p>
               </p>
               <div className={"container mt-4 flex space-x-3"}>
                 <SalesStatCard
@@ -106,7 +106,7 @@ export const SalesTarget: React.FC = () => {
             <Card href="#" className="max-w-sm">
               <h5 className="tracking-tight text-gray-900 dark:text-white">
               {`Sales - ${nameOfCurrentMonth(new Date().getMonth())}`}
-                <p>{`Total - ${salesLastMonth + agentSalesLastMonth}`}</p>
+                <p>{`Total - ${(salesLastMonth + agentSalesLastMonth).toFixed(2)}`}</p>
               </h5>
 
               <div className={"container mt-4 flex space-x-3"}>
