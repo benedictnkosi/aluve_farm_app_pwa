@@ -89,7 +89,7 @@ export const SalesTarget: React.FC = () => {
           <div className={"container mt-4 flex space-x-3"}>
             <Card href="#" className="max-w-sm">
               <p className=" tracking-tight text-gray-900 dark:text-white">
-                {`Sales - ${nameOfCurrentMonth(new Date().getMonth())}`}
+                {`${nameOfCurrentMonth(new Date().getMonth())}`}
                 <div className={"container mt-4 flex space-x-4"}>
                   {`Total - ${(salesThisMonth + agentSalesThisMonth).toFixed(2)}`}
                     {salesThisMonth + agentSalesThisMonth > salesLastMonth + agentSalesLastMonth ? (
@@ -97,6 +97,14 @@ export const SalesTarget: React.FC = () => {
                     ) : (
                     <HiArrowNarrowDown className="text-red-500 ml-1" />
                     )}
+                    <span className="ml-2">
+                      {(
+                      ((salesThisMonth + agentSalesThisMonth - (salesLastMonth + agentSalesLastMonth)) /
+                        (salesLastMonth + agentSalesLastMonth)) *
+                      100
+                      ).toFixed(2)}
+                      %
+                    </span>
                 </div>
               </p>
               <div className={"container mt-4 flex space-x-3"}>
@@ -114,7 +122,7 @@ export const SalesTarget: React.FC = () => {
 
             <Card href="#" className="max-w-sm">
               <h5 className="tracking-tight text-gray-900 dark:text-white">
-              {`Sales - ${nameOfCurrentMonth(new Date().getMonth() - 1)}`}
+              {`${nameOfCurrentMonth(new Date().getMonth() - 1)}`}
                 <p>{`Total - ${(salesLastMonth + agentSalesLastMonth).toFixed(2)}`}</p>
               </h5>
 
