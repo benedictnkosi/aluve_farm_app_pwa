@@ -17,6 +17,7 @@ import {
   HiExclamation,
   HiX,
   HiOutlineExclamationCircle,
+  HiOutlineChartBar 
 } from "react-icons/hi"; // Import the HiInformationCircle and HiOutlineArrowRight icons from the react-icons/hi package
 import { Fragment, useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
@@ -260,8 +261,6 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
           }, {} as { [key: string]: { [crop: string]: number } });
 
         setAverageSales(sortedAverageSales);
-
-        setAverageSales(averageSales);
 
         console.log("Average Sales Per Agent:", averageSales);
 
@@ -789,9 +788,9 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         <Modal.Header />
         <Modal.Body>
           <div className="text-center">
-            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <HiOutlineChartBar  className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Stock On Hand
+            Agent performance
             </h3>
             <div>
               <Table>
