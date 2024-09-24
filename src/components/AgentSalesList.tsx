@@ -87,6 +87,10 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
   const [selectedDays, setSelectedDays] = useState("30 days");
   const [remainingCabbages, setRemainingCabbages] = useState(0);
   const [remainingSpinach, setRemainingSpinach] = useState(0);
+  const [agentsWithStock, setAgentsWithStock] = useState<{
+    [key: string]: { [key: string]: number };
+  }>({});
+  const [openStockOnHandModal, setOpenStockOnHandModal] = useState(false);
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -134,13 +138,13 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
 
         // Calculate total delivered cabbages
         const totalDeliveredCabbages = response.data.reduce(
-          (acc: number, delivery: Delivery) => 
+          (acc: number, delivery: Delivery) =>
             delivery.crop_name === "Cabbage" ? acc + delivery.quantity : acc,
           0
         );
 
         const totalDeliveredSpinach = response.data.reduce(
-          (acc: number, delivery: Delivery) => 
+          (acc: number, delivery: Delivery) =>
             delivery.crop_name === "Spinach" ? acc + delivery.quantity : acc,
           0
         );
@@ -149,19 +153,56 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         const totalSoldCabbages = response.data.reduce(
           (acc: number, delivery: Delivery) =>
             delivery.crop_name === "Cabbage"
-              ? acc + delivery.sales.reduce((saleAcc, sale) => saleAcc + sale.quantity, 0)
+              ? acc +
+                delivery.sales.reduce(
+                  (saleAcc, sale) => saleAcc + sale.quantity,
+                  0
+                )
               : acc,
           0
         );
-
 
         const totalSoldSpinach = response.data.reduce(
           (acc: number, delivery: Delivery) =>
             delivery.crop_name === "Spinach"
-              ? acc + delivery.sales.reduce((saleAcc, sale) => saleAcc + sale.quantity, 0)
+              ? acc +
+                delivery.sales.reduce(
+                  (saleAcc, sale) => saleAcc + sale.quantity,
+                  0
+                )
               : acc,
           0
         );
+
+        const agentsWithStock = response.data.reduce(
+          (
+            acc: { [key: string]: { [crop: string]: number } },
+            delivery: Delivery
+          ) => {
+            const remainingStock =
+              delivery.quantity -
+              delivery.sales.reduce(
+                (saleAcc, sale) => saleAcc + sale.quantity,
+                0
+              );
+            const crop = delivery.crop_name;
+            if (remainingStock > 0) {
+              if (!acc[delivery.agent]) {
+                acc[delivery.agent] = {};
+              }
+              if (!acc[delivery.agent][crop]) {
+                acc[delivery.agent][crop] = 0;
+              }
+              acc[delivery.agent][crop] += remainingStock;
+            }
+            return acc;
+          },
+          {}
+        );
+
+        setAgentsWithStock(agentsWithStock);
+
+        console.log("Agents with stock on hand:", agentsWithStock);
 
         console.log("Total Sold Cabbages:", totalSoldCabbages);
 
@@ -626,6 +667,55 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         </Modal.Body>
       </Modal>
 
+      {/* stock on hand modal */}
+      <Modal
+        show={openStockOnHandModal}
+        size="md"
+        onClose={() => setOpenStockOnHandModal(false)}
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Stock On Hand
+            </h3>
+            <div>
+              <Table>
+                <Table.Head>
+                  <Table.HeadCell>Agent</Table.HeadCell>
+                  <Table.HeadCell>Crop</Table.HeadCell>
+                  <Table.HeadCell>On Hand</Table.HeadCell>
+                </Table.Head>
+                <Table.Body className="divide-y">
+                {Object.keys(agentsWithStock).map((agent) => (
+                  <Fragment key={agent}>
+                    {Object.keys(agentsWithStock[agent]).map((crop: string, index: number) => (
+                      <Table.Row key={index}>
+                        <Table.Cell>{agent}</Table.Cell>
+                        <Table.Cell>{crop}</Table.Cell>
+                        <Table.Cell>{agentsWithStock[agent][crop]}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Fragment>
+                ))}
+                </Table.Body>
+              </Table>
+              <Button
+                className="mt-5"
+                gradientDuoTone="greenToBlue"
+                outline
+                color="gray"
+                onClick={() => setOpenStockOnHandModal(false)}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
       {showToast && (
         <Toast>
           {isError ? (
@@ -649,19 +739,16 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
       ) : (
         <>
           <div className="flex items-center space-x-3">
+            <SalesStatCard
+              amount={totalSalesAmount.toFixed(2).toString()}
+              description={"Sales"}
+            />
 
-              <SalesStatCard
-                amount={totalSalesAmount.toFixed(2).toString()}
-                description={"Sales"}
-              />
+            <SalesStatCard
+              amount={totalAmountPaid.toFixed(2).toString()}
+              description={"Total Paid"}
+            />
 
-
-              <SalesStatCard
-                amount={totalAmountPaid.toFixed(2).toString()}
-                description={"Total Paid"}
-              />
-
-            
             <SalesStatCard
               amount={
                 isNaN(percentOwed)
@@ -671,15 +758,11 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
               description={"Paid"}
             />
             <SalesStatCard
-              amount={
-                remainingCabbages.toString()
-              }
+              amount={remainingCabbages.toString()}
               description={"Cabbages On hand"}
             />
             <SalesStatCard
-              amount={
-                remainingSpinach.toString()
-              }
+              amount={remainingSpinach.toString()}
               description={"Spinach On hand"}
             />
           </div>
@@ -710,6 +793,12 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                 90 days
               </Dropdown.Item>
             </Dropdown>
+            <Button
+              gradientDuoTone="pinkToOrange"
+              onClick={() => setOpenStockOnHandModal(true)}
+            >
+              Stock On Hand
+            </Button>
           </div>
           <div className={styles["table-width-responsive"]}>
             <Table striped className="mt-5">
