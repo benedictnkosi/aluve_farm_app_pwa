@@ -249,18 +249,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
           {}
         );
 
-        const sortedAverageSales = Object.keys(averageSales)
-          .sort((a, b) => {
-            const avgA = Object.values(averageSales[a]).reduce((acc, val) => acc + val, 0) / Object.values(averageSales[a]).length;
-            const avgB = Object.values(averageSales[b]).reduce((acc, val) => acc + val, 0) / Object.values(averageSales[b]).length;
-            return avgB - avgA;
-          })
-          .reduce((acc, key) => {
-            acc[key] = averageSales[key];
-            return acc;
-          }, {} as { [key: string]: { [crop: string]: number } });
-
-        setAverageSales(sortedAverageSales);
+        setAverageSales(averageSales);
 
         console.log("Average Sales Per Agent:", averageSales);
 
