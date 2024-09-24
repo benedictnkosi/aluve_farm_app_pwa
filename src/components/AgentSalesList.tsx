@@ -220,13 +220,17 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
               acc[agent][crop] = { totalSales: 0, count: 0 };
             }
             delivery.sales.forEach((sale) => {
-              acc[agent][crop].totalSales += sale.quantity;
-              acc[agent][crop].count += 1;
+              if(sale.quantity > 0 ){
+                acc[agent][crop].totalSales += sale.price;
+                acc[agent][crop].count += 1;
+              }
+              
             });
             return acc;
           },
           {}
         );
+
 
         const averageSales = Object.keys(averageSalesPerAgent).reduce(
           (
