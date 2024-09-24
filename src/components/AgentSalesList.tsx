@@ -91,6 +91,10 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
     [key: string]: { [key: string]: number };
   }>({});
   const [openStockOnHandModal, setOpenStockOnHandModal] = useState(false);
+  const [openAgentPerformanceModal, setOpenAgentPerformanceModal] = useState(false);
+  const [averageSales, setAverageSales] = useState<{
+    [key: string]: { [key: string]: number };
+  }>({});
 
   const fetchSales = async () => {
     setLoading(true); // Set loading to true before fetching data
@@ -201,6 +205,48 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         );
 
         setAgentsWithStock(agentsWithStock);
+
+        const averageSalesPerAgent = response.data.reduce(
+          (
+            acc: { [key: string]: { [crop: string]: { totalSales: number; count: number } } },
+            delivery: Delivery
+          ) => {
+            const agent = delivery.agent;
+            const crop = delivery.crop_name;
+            if (!acc[agent]) {
+              acc[agent] = {};
+            }
+            if (!acc[agent][crop]) {
+              acc[agent][crop] = { totalSales: 0, count: 0 };
+            }
+            delivery.sales.forEach((sale) => {
+              acc[agent][crop].totalSales += sale.quantity;
+              acc[agent][crop].count += 1;
+            });
+            return acc;
+          },
+          {}
+        );
+
+        const averageSales = Object.keys(averageSalesPerAgent).reduce(
+          (
+            acc: { [key: string]: { [crop: string]: number } },
+            agent: string
+          ) => {
+            acc[agent] = {};
+            Object.keys(averageSalesPerAgent[agent]).forEach((crop) => {
+              acc[agent][crop] =
+                averageSalesPerAgent[agent][crop].totalSales /
+                averageSalesPerAgent[agent][crop].count;
+            });
+            return acc;
+          },
+          {}
+        );
+
+        setAverageSales(averageSales);
+
+        console.log("Average Sales Per Agent:", averageSales);
 
         console.log("Agents with stock on hand:", agentsWithStock);
 
@@ -716,6 +762,55 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
         </Modal.Body>
       </Modal>
 
+{/* Agent performance modal */}
+<Modal
+        show={openAgentPerformanceModal}
+        size="md"
+        onClose={() => setOpenAgentPerformanceModal(false)}
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Stock On Hand
+            </h3>
+            <div>
+              <Table>
+                <Table.Head>
+                  <Table.HeadCell>Agent</Table.HeadCell>
+                  <Table.HeadCell>Crop</Table.HeadCell>
+                  <Table.HeadCell>Avg Price</Table.HeadCell>
+                </Table.Head>
+                <Table.Body className="divide-y">
+                {Object.keys(averageSales).map((agent) => (
+                  <Fragment key={agent}>
+                    {Object.keys(averageSales[agent]).map((crop: string, index: number) => (
+                      <Table.Row key={index}>
+                        <Table.Cell>{agent}</Table.Cell>
+                        <Table.Cell>{crop}</Table.Cell>
+                        <Table.Cell>{averageSales[agent][crop].toFixed(2)}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Fragment>
+                ))}
+                </Table.Body>
+              </Table>
+              <Button
+                className="mt-5"
+                gradientDuoTone="greenToBlue"
+                outline
+                color="gray"
+                onClick={() => setOpenAgentPerformanceModal(false)}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
       {showToast && (
         <Toast>
           {isError ? (
@@ -799,6 +894,14 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
             >
               Stock On Hand
             </Button>
+
+            <Button
+              gradientDuoTone="pinkToOrange"
+              onClick={() => setOpenAgentPerformanceModal(true)}
+            >
+              Agent Performance
+            </Button>
+
           </div>
           <div className={styles["table-width-responsive"]}>
             <Table striped className="mt-5">
