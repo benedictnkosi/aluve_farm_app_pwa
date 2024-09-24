@@ -157,7 +157,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
 
         const totalSoldSpinach = response.data.reduce(
           (acc: number, delivery: Delivery) =>
-            delivery.crop_name === "Spinch"
+            delivery.crop_name === "Spinach"
               ? acc + delivery.sales.reduce((saleAcc, sale) => saleAcc + sale.quantity, 0)
               : acc,
           0
