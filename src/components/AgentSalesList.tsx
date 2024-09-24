@@ -889,14 +889,14 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
               </Dropdown.Item>
             </Dropdown>
             <Button
-              gradientDuoTone="pinkToOrange"
+              gradientDuoTone="cyanToBlue"
               onClick={() => setOpenStockOnHandModal(true)}
             >
               Stock On Hand
             </Button>
 
             <Button
-              gradientDuoTone="pinkToOrange"
+              gradientDuoTone="greenToBlue"
               onClick={() => setOpenAgentPerformanceModal(true)}
             >
               Agent Performance
