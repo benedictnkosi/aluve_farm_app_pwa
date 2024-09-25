@@ -18,15 +18,11 @@ export function formatAmount(amount: number): string {
   }
 
   export const formatDate = (timestamp: Timestamp | string): string => {
-    const date =
-      typeof timestamp === "string" ? new Date(timestamp) : timestamp.toDate();
-    const formattedDate = date.toLocaleDateString("en-US", {
-      timeZone: "Africa/Harare",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-    return formattedDate;
+      if (typeof timestamp === "string") {
+          return timestamp;
+      } else {
+          return timestamp.toDate().toISOString();
+      }
   };
 
   export  const formatShortDate = (timestamp: string): string => {
