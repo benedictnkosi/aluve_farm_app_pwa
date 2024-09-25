@@ -19,7 +19,7 @@ export function formatAmount(amount: number): string {
 
   export const formatDate = (timestamp: Timestamp | string): string => {
       if (typeof timestamp === "string") {
-          return timestamp;
+          return timestamp.split('T')[0];
       } else {
             return timestamp.toDate().toISOString().split('T')[0];
       }
