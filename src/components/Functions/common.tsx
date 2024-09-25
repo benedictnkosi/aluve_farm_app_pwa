@@ -21,7 +21,7 @@ export function formatAmount(amount: number): string {
       if (typeof timestamp === "string") {
           return timestamp;
       } else {
-          return timestamp.toDate().toISOString();
+            return timestamp.toDate().toISOString().split('T')[0];
       }
   };
 
