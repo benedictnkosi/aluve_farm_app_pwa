@@ -533,7 +533,6 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                   id="cash"
                   name="method"
                   value="cash"
-                  defaultChecked
                 />
                 <Label htmlFor="cash">Cash</Label>
               </div>
@@ -545,6 +544,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
                   onClick={() => {
                     setPaymentMethod("EFT");
                   }}
+                  defaultChecked
                 />
                 <Label htmlFor="germany">EFT</Label>
               </div>
