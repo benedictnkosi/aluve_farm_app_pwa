@@ -402,6 +402,10 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
     resetValues();
     setLoading(true);
     try {
+      if(amount !== 0){
+        setIsError(true);
+        setMessage("To mark the transaction as paid, the amount should be zero. Use save button to record payment.");
+      }
       const response = await axios.post(`${apiUrl}/public/updatesale/paid`, {
         agent_sale_id: saleId,
         farm_uid: localStorage.getItem("farm_uid"),
