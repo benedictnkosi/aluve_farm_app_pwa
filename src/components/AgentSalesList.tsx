@@ -524,7 +524,7 @@ export const AgentSalesList: React.FC<SalesListProps> = ({ refresh }) => {
             </div>
 
             <fieldset className="flex max-w-md flex-col gap-4">
-              <legend className="mb-4">Choose your favorite country</legend>
+              <legend className="mb-4">Payment Method</legend>
               <div className="flex items-center gap-2">
                 <Radio
                   onClick={() => {
